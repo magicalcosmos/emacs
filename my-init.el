@@ -1,36 +1,23 @@
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
-;;(unless (package-installed-p 'gruvbox-theme)
-;;(package-install 'gruvbox-theme))
-(load-theme 'gruvbox-dark-medium t)
+(use-package all-the-icons)
+(use-package doom-themes
+  :ensure t
+  :config
+  ;; Global settings (defaults)
+  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+        doom-themes-enable-italic t) ; if nil, italics is universally disabled
+  (load-theme 'doom-one t)
 
-(setq inhibit-startup-message t)
-  (setq inhibit-compacting-font-caches t)
-  (scroll-bar-mode -1) ;; Disable visible scrollbar
-  (tool-bar-mode -1) ;; Dis able the toolbar
-  (set-fringe-mode 10) ;; give some breathing room
-  (menu-bar-mode -1) ;; Diable the menu bar
-  (setq visible-bell t) ;; set up the visiable bell
-  (fset 'yes-or-no-p 'y-or-n-p)
-  (global-set-key (kbd "<f5>") 'revert-buffer)
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-  (global-set-key (kbd "C-t") 'treemacs)
-
-  ;; set realtive numbers
-  ;; set type of line numbering (global variable)
-  (setq display-line-numbers-type 'relative) 
-  ;; activate line numbering in all buffers/modes
-  (global-display-line-numbers-mode)
-  ;; Activate line numbering in programming modes
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  (global-hl-line-mode 1)
-
-(delete-selection-mode t)
-(setq gc-cons-threshold 100000000)
-(setq read-process-output-max (* 1024 1024)) ;; 1mb
-(setq auto-save-default nil)
-(setq make-backup-files nil)
-(setq create-lockfiles nil)
+  ;; Enable flashing mode-line on errors
+  (doom-themes-visual-bell-config)
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+  (doom-themes-treemacs-config)
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config))
 
 ;; Download Evil
 (unless (package-installed-p 'evil)
@@ -152,9 +139,10 @@
 (ido-mode 1)
 
 (use-package which-key
-  :ensure t
+  :init (which-key-mode)
+  :diminish which-key-mode
   :config
-  (which-key-mode))
+  (setq which-key-idle-delay 0.3))
 
 (use-package company
 :ensure t
@@ -251,16 +239,16 @@
 (defun enable-minor-mode (my-pair)
   "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
   (if (buffer-file-name)
-      (if (string-match (car my-pair) buffer-file-name)
+(if (string-match (car my-pair) buffer-file-name)
 	  (funcall (cdr my-pair)))))
 
 (use-package prettier-js
   :ensure t)
 (add-hook 'web-mode-hook #'(lambda ()
-			     (enable-minor-mode
-			      '("\\.jsx?\\'" . prettier-js-mode))
-			     (enable-minor-mode
-			      '("\\.tsx?\\'" . prettier-js-mode))))
+		 (enable-minor-mode
+			'("\\.jsx?\\'" . prettier-js-mode))
+		 (enable-minor-mode
+			'("\\.tsx?\\'" . prettier-js-mode))))
 
 (global-set-key (kbd "M-s e") 'iedit-mode)
 
@@ -322,21 +310,21 @@
   (global-undo-tree-mode))
 
 (setq web-mode-markup-indent-offset 2)
-(setq web-mode-code-indent-offset 2)
-(setq web-mode-css-indent-offset 2)
-  (use-package web-mode
-    :ensure t
-    :config
-	   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-	   (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
-	   (setq web-mode-engines-alist
-		 '(("django"    . "\\.html\\'")))
-	   (setq web-mode-ac-sources-alist
-	   '(("css" . (ac-source-css-property))
-	   ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
-	 ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
-(setq web-mode-enable-auto-closing t))
-(setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+    (use-package web-mode
+:ensure t
+:config
+	     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+	     (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
+	     (setq web-mode-engines-alist
+		   '(("django"    . "\\.html\\'")))
+	     (setq web-mode-ac-sources-alist
+	     '(("css" . (ac-source-css-property))
+	     ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
+	   ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+  (setq web-mode-enable-auto-closing t))
+  (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
 
 (use-package js2-mode
 :ensure t
@@ -403,21 +391,81 @@
   (setq web-mode-code-indent-offset 2))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
 
-(setq dired-dwim-target t)
+(use-package all-the-icons-dired)
 
-(use-package dired-narrow
-:ensure t
-:config
-(bind-key "C-c C-n" #'dired-narrow)
-(bind-key "C-c C-f" #'dired-narrow-fuzzy)
-(bind-key "C-x C-N" #'dired-narrow-regexp)
-)
-
-(use-package dired-subtree :ensure t
-  :after dired
+(use-package dired
+  :ensure nil
+  :straight nil
+  :defer 1
+  :commands (dired dired-jump)
   :config
-  (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
-  (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+  (setq dired-listing-switches "-agho --group-directories-first"
+        dired-omit-files "^\\.[^.].*"
+        dired-omit-verbose nil
+        dired-hide-details-hide-symlink-targets nil
+        delete-by-moving-to-trash t)
+
+  (autoload 'dired-omit-mode "dired-x")
+
+  (add-hook 'dired-load-hook
+            (lambda ()
+              (interactive)
+              (dired-collapse)))
+
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (interactive)
+              (dired-omit-mode 1)
+              (dired-hide-details-mode 1)
+              (unless (or dw/is-termux
+                          (s-equals? "/gnu/store/" (expand-file-name default-directory)))
+                (all-the-icons-dired-mode 1))
+              (hl-line-mode 1)))
+
+  (use-package dired-rainbow
+    :ensure t
+    :defer 2
+    :config
+    (dired-rainbow-define-chmod directory "#6cb2eb" "d.*")
+    (dired-rainbow-define html "#eb5286" ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht" "eml" "mustache" "xhtml"))
+    (dired-rainbow-define xml "#f2d024" ("xml" "xsd" "xsl" "xslt" "wsdl" "bib" "json" "msg" "pgn" "rss" "yaml" "yml" "rdata"))
+    (dired-rainbow-define document "#9561e2" ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps" "rtf" "djvu" "epub" "odp" "ppt" "pptx"))
+    (dired-rainbow-define markdown "#ffed4a" ("org" "etx" "info" "markdown" "md" "mkd" "nfo" "pod" "rst" "tex" "textfile" "txt"))
+    (dired-rainbow-define database "#6574cd" ("xlsx" "xls" "csv" "accdb" "db" "mdb" "sqlite" "nc"))
+    (dired-rainbow-define media "#de751f" ("mp3" "mp4" "mkv" "MP3" "MP4" "avi" "mpeg" "mpg" "flv" "ogg" "mov" "mid" "midi" "wav" "aiff" "flac"))
+    (dired-rainbow-define image "#f66d9b" ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png" "psd" "eps" "svg"))
+    (dired-rainbow-define log "#c17d11" ("log"))
+    (dired-rainbow-define shell "#f6993f" ("awk" "bash" "bat" "sed" "sh" "zsh" "vim"))
+    (dired-rainbow-define interpreted "#38c172" ("py" "ipynb" "rb" "pl" "t" "msql" "mysql" "pgsql" "sql" "r" "clj" "cljs" "scala" "js"))
+    (dired-rainbow-define compiled "#4dc0b5" ("asm" "cl" "lisp" "el" "c" "h" "c++" "h++" "hpp" "hxx" "m" "cc" "cs" "cp" "cpp" "go" "f" "for" "ftn" "f90" "f95" "f03" "f08" "s" "rs" "hi" "hs" "pyc" ".java"))
+    (dired-rainbow-define executable "#8cc4ff" ("exe" "msi"))
+    (dired-rainbow-define compressed "#51d88a" ("7z" "zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar" "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar"))
+    (dired-rainbow-define packaged "#faad63" ("deb" "rpm" "apk" "jad" "jar" "cab" "pak" "pk3" "vdf" "vpk" "bsp"))
+    (dired-rainbow-define encrypted "#ffed4a" ("gpg" "pgp" "asc" "bfe" "enc" "signature" "sig" "p12" "pem"))
+    (dired-rainbow-define fonts "#6cb2eb" ("afm" "fon" "fnt" "pfb" "pfm" "ttf" "otf"))
+    (dired-rainbow-define partition "#e3342f" ("dmg" "iso" "bin" "nrg" "qcow" "toast" "vcd" "vmdk" "bak"))
+    (dired-rainbow-define vc "#0074d9" ("git" "gitignore" "gitattributes" "gitmodules"))
+    (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*"))
+
+  (use-package dired-single
+    :ensure t
+    :defer t)
+
+  (use-package dired-ranger
+    :ensure t
+    :defer t)
+
+  (use-package dired-collapse
+    :ensure t
+    :defer t)
+
+  (evil-collection-define-key 'normal 'dired-mode-map
+    "h" 'dired-single-up-directory
+    "H" 'dired-omit-mode
+    "l" 'dired-single-buffer
+    "y" 'dired-ranger-copy
+    "X" 'dired-ranger-move
+    "p" 'dired-ranger-paste))
 
 (use-package better-shell
     :ensure t
@@ -614,3 +662,82 @@
 (define-key z-map (kbd "f") 'origami-toggle-node)
 (define-key z-map (kbd "w") 'z/swap-windows)
 (define-key z-map (kbd "*") 'calc)
+
+(use-package emojify
+  :hook (erc-mode . emojify-mode)
+  :commands emojify-mode)
+
+(use-package alert
+  :commands alert
+  :config
+  (setq alert-default-style 'notifications))
+
+(use-package paren
+  :config
+  (set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
+  (show-paren-mode 1))
+
+(use-package evil-nerd-commenter
+  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+
+(use-package general
+  :ensure t
+  :config
+  (general-evil-setup t)
+
+  (general-create-definer bl/leader-key-def
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+
+  (general-create-definer bl/ctrl-c-keys
+    :prefix "C-c"))
+
+(use-package avy
+  :ensure t
+  :commands (avy-goto-char avy-goto-word-0 avy-goto-line))
+
+(bl/leader-key-def
+  "j"   '(:ignore t :which-key "jump")
+  "jj"  '(avy-goto-char :which-key "jump to char")
+  "jw"  '(avy-goto-word-0 :which-key "jump to word")
+  "jl"  '(avy-goto-line :which-key "jump to line"))
+
+(use-package default-text-scale
+  :ensure t
+  :defer 1
+  :config
+  (default-text-scale-mode))
+
+(use-package ace-window
+  :ensure t
+  :bind (("M-o" . ace-window))
+  :custom
+  (aw-scope 'frame)
+  (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (aw-minibuffer-flag t)
+  :config
+  (ace-window-display-mode 1))
+
+(use-package winner
+  :ensure
+  :after evil
+  :config
+  (winner-mode)
+  (define-key evil-window-map "u" 'winner-undo)
+  (define-key evil-window-map "U" 'winner-redo))
+
+(defun bl/org-mode-visual-fill ()
+  (setq visual-fill-column-width 110
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :ensure t
+  :defer t
+  :hook (org-mode . bl/org-mode-visual-fill))
+
+(use-package expand-region
+  :ensure t
+  :bind (("M-[" . er/expand-region)
+         ("C-(" . er/mark-outside-pairs)))

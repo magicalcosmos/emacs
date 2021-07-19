@@ -1,0 +1,72 @@
+#    -*- mode: org -*-
+
+
+Archived entries from file /Users/brodyliao/.emacs.d/my-init.org
+
+
+* Interface tweaks
+  :PROPERTIES:
+  :ARCHIVE_TIME: 2021-07-19 Mon 14:04
+  :ARCHIVE_FILE: ~/.emacs.d/my-init.org
+  :ARCHIVE_CATEGORY: my-init
+  :END:
+#+BEGIN_SRC emacs-lisp
+
+              (setq inhibit-startup-message t)
+              (setq inhibit-compacting-font-caches t)
+              (scroll-bar-mode -1) ;; Disable visible scrollbar
+              (tool-bar-mode -1) ;; Dis able the toolbar
+              (set-fringe-mode 10) ;; give some breathing room
+              (menu-bar-mode -1) ;; Diable the menu bar
+              (setq visible-bell t) ;; set up the visiable bell
+              (fset 'yes-or-no-p 'y-or-n-p)
+              (global-set-key (kbd "<f5>") 'revert-buffer)
+              (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+              (global-set-key (kbd "C-t") 'treemacs)
+
+              ;; set realtive numbers
+              ;; set type of line numbering (global variable)
+              (setq display-line-numbers-type 'relative) 
+              ;; activate line numbering in all buffers/modes
+              (global-display-line-numbers-mode)
+              ;; Activate line numbering in programming modes
+              (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+              (global-hl-line-mode 1)
+
+            (delete-selection-mode t)
+            (setq gc-cons-threshold 100000000)
+            (setq read-process-output-max (* 1024 1024)) ;; 1mb
+            (setq auto-save-default nil)
+            (setq make-backup-files nil)
+            (setq create-lockfiles nil)
+            (display-buffer (get-buffer-create "scratch"))
+            ((display-buffer--maybe-same-window
+          display-buffer-reuse-window
+        display-buffer--maybe-pop-up-frame-or-window
+      display-buffer-in-previous-window
+    display-buffer-use-some-window
+  display-buffer-pop-up-frame))
+
+#+END_SRC
+
+
+
+* Keep .emacs.d clean
+:PROPERTIES:
+:ARCHIVE_TIME: 2021-07-19 Mon 20:10
+:ARCHIVE_FILE: ~/.emacs.d/my-init.org
+:ARCHIVE_CATEGORY: my-init
+:END:
+#+begin_src emacs-lisp
+;; Change the user-emacs-directory to keep unwanted things out of ~/.emacs.d
+(setq user-emacs-directory (expand-file-name "~/.cache/emacs/")
+      url-history-file (expand-file-name "url/history" user-emacs-directory))
+
+
+;; Keep customization settings in a temporary file (thanks Ambrevar!)
+(setq custom-file
+      (if (boundp 'server-socket-dir)
+          (expand-file-name "custom.el" server-socket-dir)
+        (expand-file-name (format "emacs-custom-%s.el" (user-uid)) temporary-file-directory)))
+(load custom-file t)
+#+end_src
