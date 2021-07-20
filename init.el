@@ -43,7 +43,11 @@
                              (require 'f)
                              (string-equal (f-read "/etc/issue")
                                            "\nThis is the GNU system.  Welcome.\n")))
+;; set font size
 (set-default-coding-systems 'utf-8)
+
+;; Set font size 180 = 18pt
+(set-face-attribute 'default nil :height 180)
 
 ;;(add-to-list 'package-archives
 ;;'("melpa" . "https://melpa.org/packages/"))

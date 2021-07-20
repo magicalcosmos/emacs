@@ -1,0 +1,32 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/Users/brodyliao/workspace/Owl/src/views/" . "About/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ 
+)
+
+;; ----- ido-work-file-list -----
+(
+ 
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/Users/brodyliao/.emacs.d/" (24822 28617 510682 394000) ".lsp-session-v1" ".cache/" ".git/" "elpa/" "my-init.el" "recentf" "emms/" "my-init.org" ".gitignore" "init.el" "auto-save-list/" "transient/" "projectile-bookmarks.eld" "my-init.org_archive" ".extension/" "eshell/" "snippets/" "per-system-settings.el" "../" "./")
+
+ ("/Users/brodyliao/workspace/Owl/src/views/About/" (24796 16055 414684 410000) "index.tsx" "../" "./")
+
+ ("/Users/brodyliao/workspace/Owl/src/views/" (24822 15256 477315 531000) "CreateProject/" "VerifyProject/" "ChangePassword/" "components/" "ProjectList/" "About/" "Layout/" "UserManagement/" "LicenseManagenent/" "../" "./")
+
+ ("/Users/brodyliao/workspace/Owl/" (24822 15330 91471 531000) "src/" "coverage/" ".huskyrc" ".travis.yml" ".git/" "README.org" ".eslintignore" "tsconfig.json" ".eslintrc.js" "appInfo.ts" "static/" "package.json" "package-lock.json" ".gitignore" ".history/" ".editorconfig" "prettierrc" "node_modules/" "Makefile" ".DS_Store" "index.html" "configuration/" "rule.org" "../" "./")
+
+ ("/Users/brodyliao/workspace/Owl/src/views/ChangePassword/" (24822 15282 256427 622000) "index.tsx" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

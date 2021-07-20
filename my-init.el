@@ -1,18 +1,5 @@
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
-(use-package general
-  :ensure t
-  :config
-  (general-evil-setup t)
-
-  (general-create-definer bl/leader-key-def
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-
-  (general-create-definer bl/ctrl-c-keys
-    :prefix "C-c"))
-
 (use-package all-the-icons)
 (use-package doom-themes
   :ensure t
@@ -151,11 +138,25 @@
 (setq ido-everywhere t)
 (ido-mode 1)
 
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
+(use-package which-key 
+:ensure t
+:init (which-key-mode)
+:diminish which-key-mode
+:config
+(setq which-key-idle-delay 0.3))
+
+(use-package general
+  :ensure t
   :config
-  (setq which-key-idle-delay 0.3))
+  (general-evil-setup t)
+
+  (general-create-definer bl/leader-key-def
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+
+  (general-create-definer bl/ctrl-c-keys
+    :prefix "C-c"))
 
 (use-package company
 :ensure t
@@ -425,6 +426,9 @@
 :commands rg)
 
 (use-package fzf :ensure t)
+(bl/leader-key-def
+  "f"   '(:ignore t :which-key "fzf")
+  "zf"  'fzf)
 
 (use-package all-the-icons 
 :ensure t
@@ -666,20 +670,20 @@
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
-;;(bl/leader-key-def
-;;  "o"   '(:ignore t :which-key "org mode")
-;;
-;;  "oi"  '(:ignore t :which-key "insert")
-;;  "oil" '(org-insert-link :which-key "insert link")
-;;
-;;  "on"  '(org-toggle-narrow-to-subtree :which-key "toggle narrow")
-;;   
-;;  "os"  '(bl/counsel-rg-org-files :which-key "search notes")
-;;
-;;  "oa"  '(org-agenda :which-key "status")
-;;  "ot"  '(org-todo-list :which-key "todos")
-;;  "oc"  '(org-capture t :which-key "capture")
-;;  "ox"  '(org-export-dispatch t :which-key "export"))
+(bl/leader-key-def
+  "o"   '(:ignore t :which-key "org mode")
+
+  "oi"  '(:ignore t :which-key "insert")
+  "oil" '(org-insert-link :which-key "insert link")
+
+  "on"  '(org-toggle-narrow-to-subtree :which-key "toggle narrow")
+   
+  "os"  '(bl/counsel-rg-org-files :which-key "search notes")
+
+  "oa"  '(org-agenda :which-key "status")
+  "ot"  '(org-todo-list :which-key "todos")
+  "oc"  '(org-capture t :which-key "capture")
+  "ox"  '(org-export-dispatch t :which-key "export"))
 
 (defun bl/switch-project-action ()
   "Switch to a workspace with the project name and start `magit-status'."
@@ -857,20 +861,20 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-;;(bl/leader-key-def
-;; "g"   '(:ignore t :which-key "git")
-;;  "gs"  'magit-status
-;;  "gd"  'magit-diff-unstaged
-;;  "gc"  'magit-branch-or-checkout
-;;  "gl"   '(:ignore t :which-key "log")
-;;  "glc" 'magit-log-current
-;;  "glf" 'magit-log-buffer-file
-;;  "gb"  'magit-branch
-;;  "gP"  'magit-push-current
-;;"gp"  'magit-pull-branch
-;;  "gf"  'magit-fetch
-;; "gF"  'magit-fetch-all
-;;"gr"  'magit-rebase)
+(bl/leader-key-def
+  "g"   '(:ignore t :which-key "git")
+  "gs"  'magit-status
+  "gd"  'magit-diff-unstaged
+  "gc"  'magit-branch-or-checkout
+  "gl"   '(:ignore t :which-key "log")
+  "glc" 'magit-log-current
+  "glf" 'magit-log-buffer-file
+  "gb"  'magit-branch
+  "gP"  'magit-push-current
+  "gp"  'magit-pull-branch
+  "gf"  'magit-fetch
+  "gF"  'magit-fetch-all
+  "gr"  'magit-rebase)
   (use-package forge
 :disabled)
 (use-package magit-todos

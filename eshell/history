@@ -4,3 +4,8 @@ git commit -m "add new config"
 git push
 ls
 git status
+git status
+git add .
+git commit -m "add new config"
+git push
+exit
