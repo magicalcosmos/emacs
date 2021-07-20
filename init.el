@@ -99,7 +99,7 @@
  '(org-startup-folded 'overview)
  '(org-startup-indented t)
  '(package-selected-packages
-   '(expand-region visual-fill-column default-text-scale general better-shell undo-tree yasnippet flycheck json-mode company which-key treemacs-projectile treemacs web-mode gruvbox-theme grubbox-theme grubbox-thtme try use-package)))
+   '(emms mpv matrix-client vterm eshell-toggle rainbow-mode rainbow-delimiters smartparens yaml-mode impatient-mode go-mode typescript-mode apheleia nvm dap-mode git-link evil-org openwith expand-region visual-fill-column default-text-scale general better-shell undo-tree yasnippet flycheck json-mode company which-key treemacs-projectile treemacs web-mode gruvbox-theme grubbox-theme grubbox-thtme try use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

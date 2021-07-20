@@ -1,5 +1,18 @@
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
+(use-package general
+  :ensure t
+  :config
+  (general-evil-setup t)
+
+  (general-create-definer bl/leader-key-def
+    :keymaps '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+
+  (general-create-definer bl/ctrl-c-keys
+    :prefix "C-c"))
+
 (use-package all-the-icons)
 (use-package doom-themes
   :ensure t
@@ -169,86 +182,33 @@
 
 (add-hook 'python-mode-hook 'my/python-mode-hook)
 
-(use-package magit
-      :ensure t
-      :bind (
-	     ("C-x g" . magit-status)))
-
-(setq magit-status-margin
-  '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18))
-    (use-package git-gutter
-    :ensure t
-    :init
-    (global-git-gutter-mode +1))
-
-    (global-set-key (kbd "M-g M-g") 'hydra-git-gutter/body)
-
-
-    (use-package git-timemachine
-    :ensure t
-    )
-  (defhydra hydra-git-gutter (:body-pre (git-gutter-mode 1)
-                              :hint nil)
-    "
-  Git gutter:
-    _j_: next hunk        _s_tage hunk     _q_uit
-    _k_: previous hunk    _r_evert hunk    _Q_uit and deactivate git-gutter
-    ^ ^                   _p_opup hunk
-    _h_: first hunk
-    _l_: last hunk        set start _R_evision
-  "
-    ("j" git-gutter:next-hunk)
-    ("k" git-gutter:previous-hunk)
-    ("h" (progn (goto-char (point-min))
-                (git-gutter:next-hunk 1)))
-    ("l" (progn (goto-char (point-min))
-                (git-gutter:previous-hunk 1)))
-    ("s" git-gutter:stage-hunk)
-    ("r" git-gutter:revert-hunk)
-    ("p" git-gutter:popup-hunk)
-    ("R" git-gutter:set-start-revision)
-    ("q" nil :color blue)
-    ("Q" (progn (git-gutter-mode -1)
-                ;; git-gutter-fringe doesn't seem to
-                ;; clear the markup right away
-                (sit-for 0.1)
-                (git-gutter:clear))
-         :color blue))
-
-(setq lsp-log-io nil) ;; Don't log everything = speed
-(setq lsp-keymap-prefix "C-c l")
-(setq lsp-restart 'auto-restart)
-(setq lsp-ui-sideline-show-diagnostics t)
-(setq lsp-ui-sideline-show-hover t)
-(setq lsp-ui-sideline-show-code-actions t)
-
 (use-package lsp-mode
-  :ensure t
-  :hook (
-	 (web-mode . lsp-deferred)
-	 (lsp-mode . lsp-enable-which-key-integration)
-	 )
-  :commands lsp-deferred)
+   :ensure t
+   :commands lsp
+   :hook ((typescript-mode js2-mode web-mode) . lsp)
+   :bind (:map lsp-mode-map
+          ("TAB" . completion-at-point))
+   :custom (lsp-headerline-breadcrumb-enable nil))
 
+;; (bl/leader-key-def
+;;   "l"  '(:ignore t :which-key "lsp")
+;;   "ld" 'xref-find-definitions
+;;   "lr" 'xref-find-references
+;;   "ln" 'lsp-ui-find-next-reference
+;;   "lp" 'lsp-ui-find-prev-reference
+;;   "ls" 'counsel-imenu
+;;   "le" 'lsp-ui-flycheck-list
+;;   "lS" 'lsp-ui-sideline-mode
+;;   "lX" 'lsp-execute-code-action)
 
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode)
-
-
-(defun enable-minor-mode (my-pair)
-  "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
-  (if (buffer-file-name)
-(if (string-match (car my-pair) buffer-file-name)
-	  (funcall (cdr my-pair)))))
-
-(use-package prettier-js
-  :ensure t)
-(add-hook 'web-mode-hook #'(lambda ()
-		 (enable-minor-mode
-			'("\\.jsx?\\'" . prettier-js-mode))
-		 (enable-minor-mode
-			'("\\.tsx?\\'" . prettier-js-mode))))
+ (use-package lsp-ui
+   :ensure t
+   :hook (lsp-mode . lsp-ui-mode)
+   :config
+   (setq lsp-ui-sideline-enable t)
+   (setq lsp-ui-sideline-show-hover nil)
+   (setq lsp-ui-doc-position 'bottom)
+   (lsp-ui-doc-show))
 
 (global-set-key (kbd "M-s e") 'iedit-mode)
 
@@ -392,80 +352,6 @@
 (add-hook 'web-mode-hook  'my-web-mode-hook)
 
 (use-package all-the-icons-dired)
-
-(use-package dired
-  :ensure nil
-  :straight nil
-  :defer 1
-  :commands (dired dired-jump)
-  :config
-  (setq dired-listing-switches "-agho --group-directories-first"
-        dired-omit-files "^\\.[^.].*"
-        dired-omit-verbose nil
-        dired-hide-details-hide-symlink-targets nil
-        delete-by-moving-to-trash t)
-
-  (autoload 'dired-omit-mode "dired-x")
-
-  (add-hook 'dired-load-hook
-            (lambda ()
-              (interactive)
-              (dired-collapse)))
-
-  (add-hook 'dired-mode-hook
-            (lambda ()
-              (interactive)
-              (dired-omit-mode 1)
-              (dired-hide-details-mode 1)
-              (unless (or dw/is-termux
-                          (s-equals? "/gnu/store/" (expand-file-name default-directory)))
-                (all-the-icons-dired-mode 1))
-              (hl-line-mode 1)))
-
-  (use-package dired-rainbow
-    :ensure t
-    :defer 2
-    :config
-    (dired-rainbow-define-chmod directory "#6cb2eb" "d.*")
-    (dired-rainbow-define html "#eb5286" ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht" "eml" "mustache" "xhtml"))
-    (dired-rainbow-define xml "#f2d024" ("xml" "xsd" "xsl" "xslt" "wsdl" "bib" "json" "msg" "pgn" "rss" "yaml" "yml" "rdata"))
-    (dired-rainbow-define document "#9561e2" ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps" "rtf" "djvu" "epub" "odp" "ppt" "pptx"))
-    (dired-rainbow-define markdown "#ffed4a" ("org" "etx" "info" "markdown" "md" "mkd" "nfo" "pod" "rst" "tex" "textfile" "txt"))
-    (dired-rainbow-define database "#6574cd" ("xlsx" "xls" "csv" "accdb" "db" "mdb" "sqlite" "nc"))
-    (dired-rainbow-define media "#de751f" ("mp3" "mp4" "mkv" "MP3" "MP4" "avi" "mpeg" "mpg" "flv" "ogg" "mov" "mid" "midi" "wav" "aiff" "flac"))
-    (dired-rainbow-define image "#f66d9b" ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png" "psd" "eps" "svg"))
-    (dired-rainbow-define log "#c17d11" ("log"))
-    (dired-rainbow-define shell "#f6993f" ("awk" "bash" "bat" "sed" "sh" "zsh" "vim"))
-    (dired-rainbow-define interpreted "#38c172" ("py" "ipynb" "rb" "pl" "t" "msql" "mysql" "pgsql" "sql" "r" "clj" "cljs" "scala" "js"))
-    (dired-rainbow-define compiled "#4dc0b5" ("asm" "cl" "lisp" "el" "c" "h" "c++" "h++" "hpp" "hxx" "m" "cc" "cs" "cp" "cpp" "go" "f" "for" "ftn" "f90" "f95" "f03" "f08" "s" "rs" "hi" "hs" "pyc" ".java"))
-    (dired-rainbow-define executable "#8cc4ff" ("exe" "msi"))
-    (dired-rainbow-define compressed "#51d88a" ("7z" "zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar" "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar"))
-    (dired-rainbow-define packaged "#faad63" ("deb" "rpm" "apk" "jad" "jar" "cab" "pak" "pk3" "vdf" "vpk" "bsp"))
-    (dired-rainbow-define encrypted "#ffed4a" ("gpg" "pgp" "asc" "bfe" "enc" "signature" "sig" "p12" "pem"))
-    (dired-rainbow-define fonts "#6cb2eb" ("afm" "fon" "fnt" "pfb" "pfm" "ttf" "otf"))
-    (dired-rainbow-define partition "#e3342f" ("dmg" "iso" "bin" "nrg" "qcow" "toast" "vcd" "vmdk" "bak"))
-    (dired-rainbow-define vc "#0074d9" ("git" "gitignore" "gitattributes" "gitmodules"))
-    (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*"))
-
-  (use-package dired-single
-    :ensure t
-    :defer t)
-
-  (use-package dired-ranger
-    :ensure t
-    :defer t)
-
-  (use-package dired-collapse
-    :ensure t
-    :defer t)
-
-  (evil-collection-define-key 'normal 'dired-mode-map
-    "h" 'dired-single-up-directory
-    "H" 'dired-omit-mode
-    "l" 'dired-single-buffer
-    "y" 'dired-ranger-copy
-    "X" 'dired-ranger-move
-    "p" 'dired-ranger-paste))
 
 (use-package better-shell
     :ensure t
@@ -680,19 +566,6 @@
 (use-package evil-nerd-commenter
   :bind ("M-/" . evilnc-comment-or-uncomment-lines))
 
-(use-package general
-  :ensure t
-  :config
-  (general-evil-setup t)
-
-  (general-create-definer bl/leader-key-def
-    :keymaps '(normal insert visual emacs)
-    :prefix "SPC"
-    :global-prefix "C-SPC")
-
-  (general-create-definer bl/ctrl-c-keys
-    :prefix "C-c"))
-
 (use-package avy
   :ensure t
   :commands (avy-goto-char avy-goto-word-0 avy-goto-line))
@@ -741,3 +614,271 @@
   :ensure t
   :bind (("M-[" . er/expand-region)
          ("C-(" . er/mark-outside-pairs)))
+
+(use-package org-superstar
+    :ensure t
+    :after org
+    :hook (org-mode . org-superstar-mode)
+    :custom
+    (org-superstar-remove-leading-stars t)
+    (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")))
+;; Make sure org-indent face is available
+(require 'org-indent)
+
+;; Ensure that anything that should be fixed-pitch in Org files appears that way
+(set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+(set-face-attribute 'org-table nil  :inherit 'fixed-pitch)
+(set-face-attribute 'org-formula nil  :inherit 'fixed-pitch)
+(set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-indent nil :inherit '(org-hide fixed-pitch))
+(set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+(set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+(set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch)
+
+;; Get rid of the background on column views
+(set-face-attribute 'org-column nil :background nil)
+(set-face-attribute 'org-column-title nil :background nil)
+
+;; This is needed as of Org 9.2
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src sh"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("sc" . "src scheme"))
+(add-to-list 'org-structure-template-alist '("ts" . "src typescript"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("go" . "src go"))
+(add-to-list 'org-structure-template-alist '("yaml" . "src yaml"))
+(add-to-list 'org-structure-template-alist '("json" . "src json"))
+
+(defun bl/search-org-files ()
+  (interactive)
+  (counsel-rg "" "~/Notes" nil "Search Notes: "))
+
+(use-package evil-org
+  :ensure t
+  :after org
+  :hook ((org-mode . evil-org-mode)
+         (org-agenda-mode . evil-org-mode)
+         (evil-org-mode . (lambda () (evil-org-set-key-theme '(navigation todo insert textobjects additional)))))
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
+
+;;(bl/leader-key-def
+;;  "o"   '(:ignore t :which-key "org mode")
+;;
+;;  "oi"  '(:ignore t :which-key "insert")
+;;  "oil" '(org-insert-link :which-key "insert link")
+;;
+;;  "on"  '(org-toggle-narrow-to-subtree :which-key "toggle narrow")
+;;   
+;;  "os"  '(bl/counsel-rg-org-files :which-key "search notes")
+;;
+;;  "oa"  '(org-agenda :which-key "status")
+;;  "ot"  '(org-todo-list :which-key "todos")
+;;  "oc"  '(org-capture t :which-key "capture")
+;;  "ox"  '(org-export-dispatch t :which-key "export"))
+
+(defun bl/switch-project-action ()
+  "Switch to a workspace with the project name and start `magit-status'."
+  ;; TODO: Switch to EXWM workspace 1?
+  (persp-switch (projectile-project-name))
+  (magit-status))
+
+(use-package projectile
+  :ensure t
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :demand t
+  :bind ("C-M-p" . projectile-find-file)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (when (file-directory-p "~/workspace/web")
+    (setq projectile-project-search-path '("~/workspace/web")))
+  (setq projectile-switch-project-action #'bl/switch-project-action))
+
+(use-package counsel-projectile
+  :ensure t
+  :disabled
+  :after projectile
+  :config
+  (counsel-projectile-mode))
+
+(bl/leader-key-def
+  "pf"  'projectile-find-file
+  "ps"  'projectile-switch-project
+  "pF"  'consult-ripgrep
+  "pp"  'projectile-find-file
+  "pc"  'projectile-compile-project
+  "pd"  'projectile-dired)
+
+(use-package dap-mode
+  :ensure t
+  :custom
+  (lsp-enable-dap-auto-configure nil)
+  :config
+  (dap-ui-mode 1)
+  (dap-tooltip-mode 1)
+  (require 'dap-node)
+  (dap-node-setup))
+
+(use-package nvm
+  :defer t)
+(use-package typescript-mode
+  :ensure
+  :mode "\\.ts\\'"
+  :config
+  (setq typescript-indent-level 2))
+
+(defun bl/set-js-indentation ()
+  (setq js-indent-level 2)
+  (setq evil-shift-width js-indent-level)
+  (setq-default tab-width 2))
+
+(use-package js2-mode
+  :ensure t
+  :mode "\\.(j|t)sx?\\'"
+  :config
+  ;; Use js2-mode for Node scripts
+  (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
+
+  ;; Don't use built-in syntax checking
+  (setq js2-mode-show-strict-warnings nil)
+
+  ;; Set up proper indentation in JavaScript and JSON files
+  (add-hook 'js2-mode-hook #'bl/set-js-indentation)
+  (add-hook 'json-mode-hook #'bl/set-js-indentation))
+
+
+
+(use-package prettier-js
+  :ensure t
+  ;; :hook ((js2-mode . prettier-js-mode)
+  ;;        (typescript-mode . prettier-js-mode))
+  :config
+  (setq prettier-js-show-errors nil))
+
+(use-package go-mode
+  :ensure t
+  :hook (go-mode . lsp-deferred))
+
+(use-package markdown-mode
+  :ensure t
+  :mode "\\.md\\'"
+  :config
+  (setq markdown-command "marked")
+  (defun bl/set-markdown-header-font-sizes ()
+    (dolist (face '((markdown-header-face-1 . 1.2)
+                    (markdown-header-face-2 . 1.1)
+                    (markdown-header-face-3 . 1.0)
+                    (markdown-header-face-4 . 1.0)
+                    (markdown-header-face-5 . 1.0)))
+      (set-face-attribute (car face) nil :weight 'normal :height (cdr face))))
+
+  (defun bl/markdown-mode-hook ()
+    (bl/set-markdown-header-font-sizes))
+
+  (add-hook 'markdown-mode-hook 'bl/markdown-mode-hook))
+
+(use-package web-mode
+  :ensure
+  :mode "(\\.\\(html?\\|ejs\\|tsx\\|jsx\\|vue\\)\\'"
+  :config
+  (setq-default web-mode-code-indent-offset 2)
+  (setq-default web-mode-markup-indent-offset 2)
+  (setq-default web-mode-attribute-indent-offset 2))
+
+;; 1. Start the server with `httpd-start'
+;; 2. Use `impatient-mode' on any buffer
+(use-package impatient-mode
+  :ensure t)
+
+(use-package skewer-mode
+  :ensure t)
+
+(use-package yaml-mode
+  :ensure t
+  :mode "\\.ya?ml\\'")
+
+(use-package smartparens
+  :ensure t
+  :hook (prog-mode . smartparens-mode))
+
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode . rainbow-delimiters-mode))
+(use-package rainbow-mode
+  :ensure
+  :defer t
+  :hook (org-mode
+         emacs-lisp-mode
+         web-mode
+         typescript-mode
+         js2-mode))
+
+(use-package eshell-toggle
+  :ensure t
+  :after eshell
+  :bind ("C-M-'" . eshell-toggle)
+  :custom
+  (eshell-toggle-size-fraction 3)
+  (eshell-toggle-use-projectile-root t)
+  (eshell-toggle-run-command nil))
+
+(use-package vterm
+  :ensure t
+  :commands vterm
+  :config
+  (setq vterm-max-scrollback 10000))
+
+(use-package mpv
+  :ensure t)
+(use-package emms
+  :ensure t
+  :commands emms
+  :config
+  (require 'emms-setup)
+  (emms-standard)
+  (emms-default-players)
+  (emms-mode-line-disable)
+  (setq emms-source-file-default-directory "~/Music/")
+  (bl/leader-key-def
+    "am"  '(:ignore t :which-key "media")
+    "amp" '(emms-pause :which-key "play / pause")
+    "amf" '(emms-play-file :which-key "play file")))
+
+(use-package magit
+  :ensure t
+  :bind ("C-M-;" . magit-status)
+  :commands (magit-status magit-get-current-branch)
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+;;(bl/leader-key-def
+;; "g"   '(:ignore t :which-key "git")
+;;  "gs"  'magit-status
+;;  "gd"  'magit-diff-unstaged
+;;  "gc"  'magit-branch-or-checkout
+;;  "gl"   '(:ignore t :which-key "log")
+;;  "glc" 'magit-log-current
+;;  "glf" 'magit-log-buffer-file
+;;  "gb"  'magit-branch
+;;  "gP"  'magit-push-current
+;;"gp"  'magit-pull-branch
+;;  "gf"  'magit-fetch
+;; "gF"  'magit-fetch-all
+;;"gr"  'magit-rebase)
+  (use-package forge
+:disabled)
+(use-package magit-todos
+:defer t)
+(use-package git-link
+:ensure t
+:commands git-link
+:config
+(setq git-link-open-in-browser t)
+(bl/leader-key-def
+      "gL"  'git-link))
