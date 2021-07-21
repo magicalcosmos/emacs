@@ -183,33 +183,41 @@
 
 (add-hook 'python-mode-hook 'my/python-mode-hook)
 
+;; lsp-mode
+(setq lsp-log-io nil) ;; Don't log everything = speed
+(setq lsp-keymap-prefix "C-c l")
+(setq lsp-restart 'auto-restart)
+(setq lsp-ui-sideline-show-diagnostics t)
+(setq lsp-ui-sideline-show-hover t)
+(setq lsp-ui-sideline-show-code-actions t)
+
 (use-package lsp-mode
-   :ensure t
-   :commands lsp
-   :hook ((typescript-mode js2-mode web-mode) . lsp)
-   :bind (:map lsp-mode-map
-          ("TAB" . completion-at-point))
-   :custom (lsp-headerline-breadcrumb-enable nil))
+  :ensure t
+  :hook (
+	 (web-mode . lsp-deferred)
+	 (lsp-mode . lsp-enable-which-key-integration)
+	 )
+  :commands lsp-deferred)
 
-;; (bl/leader-key-def
-;;   "l"  '(:ignore t :which-key "lsp")
-;;   "ld" 'xref-find-definitions
-;;   "lr" 'xref-find-references
-;;   "ln" 'lsp-ui-find-next-reference
-;;   "lp" 'lsp-ui-find-prev-reference
-;;   "ls" 'counsel-imenu
-;;   "le" 'lsp-ui-flycheck-list
-;;   "lS" 'lsp-ui-sideline-mode
-;;   "lX" 'lsp-execute-code-action)
 
- (use-package lsp-ui
-   :ensure t
-   :hook (lsp-mode . lsp-ui-mode)
-   :config
-   (setq lsp-ui-sideline-enable t)
-   (setq lsp-ui-sideline-show-hover nil)
-   (setq lsp-ui-doc-position 'bottom)
-   (lsp-ui-doc-show))
+(use-package lsp-ui
+  :ensure t
+  :commands lsp-ui-mode)
+
+
+(defun enable-minor-mode (my-pair)
+  "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
+  (if (buffer-file-name)
+      (if (string-match (car my-pair) buffer-file-name)
+	  (funcall (cdr my-pair)))))
+
+(use-package prettier-js
+  :ensure t)
+(add-hook 'web-mode-hook #'(lambda ()
+                             (enable-minor-mode
+                              '("\\.jsx?\\'" . prettier-js-mode))
+			     (enable-minor-mode
+                              '("\\.tsx?\\'" . prettier-js-mode))))
 
 (global-set-key (kbd "M-s e") 'iedit-mode)
 
@@ -441,6 +449,8 @@
 :commands rg)
 
 (use-package fzf :ensure t)
+    (bl/leader-key-def
+      "C-p" 'fzf)
 
 (use-package all-the-icons 
 :ensure t
@@ -860,11 +870,11 @@
   (emms-standard)
   (emms-default-players)
   (emms-mode-line-disable)
-  (setq emms-source-file-default-directory "~/Music/mp3")
+  (setq emms-source-file-default-directory "~/Music"))
   (bl/leader-key-def
     "a"  '(:ignore t :which-key "media")
     "ap" '(emms-pause :which-key "play / pause")
-    "af" '(emms-play-file :which-key "play file")))
+    "af" '(emms-play-file :which-key "play file"))
 
 (use-package magit
   :ensure t

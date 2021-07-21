@@ -2,6 +2,7 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/Users/brodyliao/workspace/web/owl/src/utils/" . "common/")
  ("/Users/brodyliao/workspace/Owl/src/views/" . "About/")
 )
 
@@ -17,9 +18,23 @@
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/Users/brodyliao/Music/mp3/" (24823 20123 144758 632000) "飞鸟和蝉.mp3" "田馥甄  你就不要想起我.mp3" "只对你有感觉.mp3" "对你有感觉.mp3" "飞云之下.mp3" "Melody-陶喆-151894.mp3" "北极雪.mp3" "放过自己.mp3" "我们都一样.mp3" "琵琶语.mp3" "张杰 - 勿忘心安.mp3" "白桦林.mp3" "故乡的风景.mp3" "海鸣威-你的承诺.mp3" "叶子.mp3" "和你一样.mp3" "夜曲.mp3" "老人与海.mp3" "笑纳.mp3" "如果有来生.mp3" "分开旅行.mp3" "天涯尽处.mp3" "天涯尽处.mp4" "广岛之恋.mp3" "被风吹过的夏天.mp3" "再见只是陌生人.mp3" "寂寞在唱歌.mp3" "../" "./")
+ ("/Users/brodyliao/workspace/web/owl/src/views/ChangePassword/" (24820 55633 117201 920000) "index.tsx" "../" "./")
 
- ("/Users/brodyliao/.emacs.d/" (24823 22815 106507 448000) ".lsp-session-v1" "games/" ".cache/" ".git/" "elpa/" "my-init.el" "recentf" "emms/" "my-init.org" ".gitignore" "init.el" "auto-save-list/" "eln-cache/" "transient/" "projectile-bookmarks.eld" "my-init.org_archive" ".extension/" "eshell/" "ido.last" "snippets/" "per-system-settings.el" "ac-comphist.dat" "../" "./")
+ ("/Users/brodyliao/workspace/web/owl/src/store/./" (24820 55633 110324 742000) "user.ts" "config.ts" "index.ts" "common.ts" "websocket.ts" "../" "./")
+
+ ("/Users/brodyliao/.emacs.d/" (24824 9977 900667 740000) ".lsp-session-v1" "games/" ".cache/" ".git/" "elpa/" "my-init.el" "recentf" "emms/" "my-init.org" ".gitignore" "init.el" "auto-save-list/" "eln-cache/" "transient/" "projectile-bookmarks.eld" "my-init.org_archive" ".extension/" "eshell/" "ido.last" "snippets/" "per-system-settings.el" "ac-comphist.dat" "../" "./")
+
+ ("/Users/brodyliao/workspace/web/owl/src/utils/common/" (24820 55633 115404 74000) "index.ts" "../" "./")
+
+ ("/Users/brodyliao/workspace/web/owl/src/utils/" (24820 55633 116726 976000) "ajax/" "dict/" "authorization/" "errors/" "RWebSocket/" "log/" "localStorage/" "common/" "license/" "reg/" "../" "./")
+
+ ("/Users/brodyliao/workspace/web/owl/src/utils/authorization/" (24820 55633 115004 810000) "index.ts" "../" "./")
+
+ ("/Users/brodyliao/workspace/web/owl/src/routes/" (24820 55633 107441 82000) "paths.ts" "index.ts" "matchRoute.ts" "renderRoutes.tsx" "../" "./")
+
+ ("/Users/brodyliao/workspace/web/owl/src/store/" (24820 55633 110324 742000) "user.ts" "config.ts" "index.ts" "common.ts" "websocket.ts" "../" "./")
+
+ ("/Users/brodyliao/Music/mp3/" (24823 20123 144758 632000) "飞鸟和蝉.mp3" "田馥甄  你就不要想起我.mp3" "只对你有感觉.mp3" "对你有感觉.mp3" "飞云之下.mp3" "Melody-陶喆-151894.mp3" "北极雪.mp3" "放过自己.mp3" "我们都一样.mp3" "琵琶语.mp3" "张杰 - 勿忘心安.mp3" "白桦林.mp3" "故乡的风景.mp3" "海鸣威-你的承诺.mp3" "叶子.mp3" "和你一样.mp3" "夜曲.mp3" "老人与海.mp3" "笑纳.mp3" "如果有来生.mp3" "分开旅行.mp3" "天涯尽处.mp3" "天涯尽处.mp4" "广岛之恋.mp3" "被风吹过的夏天.mp3" "再见只是陌生人.mp3" "寂寞在唱歌.mp3" "../" "./")
 
  ("/Users/brodyliao/workspace/Owl/src/views/About/" (24796 16055 414684 410000) "index.tsx" "../" "./")
 
