@@ -10,3 +10,8 @@ git commit -m "new config"
 git push
 git push
 git pull
+git status
+git add .
+git commit -m "new config"
+git push
+git push

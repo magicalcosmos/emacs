@@ -1,0 +1,4 @@
+;;; .emms-cache -*- mode: emacs-lisp; coding: utf-8; -*-
+(puthash "/Users/brodyliao/Music/mp3/Melody-陶喆-151894.mp3" '(*track* (type . file) (name . "/Users/brodyliao/Music/mp3/Melody-陶喆-151894.mp3") (info-artist . #("ÌÕ´" 0 4 (charset iso-8859-1))) (info-album . "乐之路") (info-title . "Melody") (info-mtime 24578 60032 0 0)) emms-cache-db)
+(puthash "/Users/brodyliao/Music/mp3/分开旅行.mp3" '(*track* (type . file) (name . "/Users/brodyliao/Music/mp3/分开旅行.mp3") (info-title . "分开旅行") (info-artist . "群可") (info-mtime 24578 59730 0 0)) emms-cache-db)
+(puthash "/Users/brodyliao/Music/mp3/和你一样.mp3" '(*track* (type . file) (name . "/Users/brodyliao/Music/mp3/和你一样.mp3") (info-tracknumber . "1") (info-title . #("ÇúÄ¿ 1" 0 6 (charset iso-8859-1))) (info-artist . #("ÀîÓî´º" 0 6 (charset iso-8859-1))) (info-album . #("ºÍÄãÒ»Ñù" 0 8 (charset iso-8859-1))) (info-mtime 24578 57668 0 0)) emms-cache-db)
