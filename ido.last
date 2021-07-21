@@ -17,7 +17,7 @@
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/Users/brodyliao/.emacs.d/" (24822 28617 510682 394000) ".lsp-session-v1" ".cache/" ".git/" "elpa/" "my-init.el" "recentf" "emms/" "my-init.org" ".gitignore" "init.el" "auto-save-list/" "transient/" "projectile-bookmarks.eld" "my-init.org_archive" ".extension/" "eshell/" "snippets/" "per-system-settings.el" "../" "./")
+ ("/Users/brodyliao/.emacs.d/" (24823 22815 106507 448000) ".lsp-session-v1" "games/" ".cache/" ".git/" "elpa/" "my-init.el" "recentf" "emms/" "my-init.org" ".gitignore" "init.el" "auto-save-list/" "eln-cache/" "transient/" "projectile-bookmarks.eld" "my-init.org_archive" ".extension/" "eshell/" "ido.last" "snippets/" "per-system-settings.el" "ac-comphist.dat" "../" "./")
 
  ("/Users/brodyliao/workspace/Owl/src/views/About/" (24796 16055 414684 410000) "index.tsx" "../" "./")
 

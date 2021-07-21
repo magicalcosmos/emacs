@@ -6,6 +6,7 @@ ls
 git status
 git status
 git add .
-git commit -m "add new config"
+git commit -m "new config"
 git push
-exit
+git push
+git pull

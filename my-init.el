@@ -241,10 +241,10 @@
   (use-package swiper
   :ensure t
   :bind (("C-s" . swiper-isearch)
-	 ("C-r" . swiper-isearch)
-	 ("C-c C-r" . ivy-resume)
-	 ("M-x" . counsel-M-x)
-	 ("C-x C-f" . counsel-find-file))
+   ("C-r" . swiper-isearch)
+   ("C-c C-r" . ivy-resume)
+   ("M-x" . counsel-M-x)
+   ("C-x C-f" . counsel-find-file))
   :config
   (progn
     (ivy-mode 1)
@@ -252,6 +252,14 @@
     (setq ivy-display-style 'fancy)
     (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
     ))
+(bl/leader-key-def
+  "r"   '(ivy-resume :which-key "ivy resume")
+  "f"   '(:ignore t :which-key "files")
+  "ff"  '(counsel-find-file :which-key "open file")
+  "C-f" 'counsel-find-file
+  "fr"  '(counsel-recentf :which-key "recent files")
+  "fR"  '(revert-buffer :which-key "revert file")
+  "fj"  '(counsel-file-jump :which-key "jump to file"))
 
 (use-package flycheck
   :ensure t
@@ -360,40 +368,47 @@
            ("C-:" . better-shell-remote-open)))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(setq ibuffer-saved-filter-groups
-      (quote (("default"
-               ("dired" (mode . dired-mode))
-               ("org" (name . "^.*org$"))
-               ("magit" (mode . magit-mode))
-               ("IRC" (or (mode . circe-channel-mode) (mode . circe-server-mode)))
-               ("web" (or (mode . web-mode) (mode . js2-mode)))
-               ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
-               ("mu4e" (or
+    (setq ibuffer-saved-filter-groups
+          (quote (("default"
+                   ("dired" (mode . dired-mode))
+                   ("org" (name . "^.*org$"))
+                   ("magit" (mode . magit-mode))
+                   ("IRC" (or (mode . circe-channel-mode) (mode . circe-server-mode)))
+                   ("web" (or (mode . web-mode) (mode . js2-mode)))
+                   ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+                   ("mu4e" (or
 
-                        (mode . mu4e-compose-mode)
-                        (name . "\*mu4e\*")
-                        ))
-               ("programming" (or
-                               (mode . clojure-mode)
-                               (mode . clojurescript-mode)
-                               (mode . python-mode)
-                               (mode . c++-mode)))
-               ("emacs" (or
-                         (name . "^\\*scratch\\*$")
-                         (name . "^\\*Messages\\*$")))
-               ))))
-(add-hook 'ibuffer-mode-hook
-          (lambda ()
-            (ibuffer-auto-mode 1)
-            (ibuffer-switch-to-saved-filter-groups "default")))
+                            (mode . mu4e-compose-mode)
+                            (name . "\*mu4e\*")
+                            ))
+                   ("programming" (or
+                                   (mode . clojure-mode)
+                                   (mode . clojurescript-mode)
+                                   (mode . python-mode)
+                                   (mode . c++-mode)))
+                   ("emacs" (or
+                             (name . "^\\*scratch\\*$")
+                             (name . "^\\*Messages\\*$")))
+                   ))))
+    (add-hook 'ibuffer-mode-hook
+              (lambda ()
+                (ibuffer-auto-mode 1)
+                (ibuffer-switch-to-saved-filter-groups "default")))
 
-;; don't show these
-                                        ;(add-to-list 'ibuffer-never-show-predicates "zowie")
-;; Don't show filter groups if there are no buffers in that group
-(setq ibuffer-show-empty-filter-groups nil)
+    ;; don't show these
+                                            ;(add-to-list 'ibuffer-never-show-predicates "zowie")
+    ;; Don't show filter groups if there are no buffers in that group
+    (setq ibuffer-show-empty-filter-groups nil)
 
-;; Don't ask for confirmation to delete marked buffers
-(setq ibuffer-expert t)
+    ;; Don't ask for confirmation to delete marked buffers
+    (setq ibuffer-expert t)
+(use-package emmet-mode
+:ensure t
+:config
+(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+(add-hook 'web-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
+)
 
 (use-package pdf-tools
   :ensure t
@@ -426,9 +441,6 @@
 :commands rg)
 
 (use-package fzf :ensure t)
-(bl/leader-key-def
-  "f"   '(:ignore t :which-key "fzf")
-  "zf"  'fzf)
 
 (use-package all-the-icons 
 :ensure t
@@ -848,11 +860,11 @@
   (emms-standard)
   (emms-default-players)
   (emms-mode-line-disable)
-  (setq emms-source-file-default-directory "~/Music/")
+  (setq emms-source-file-default-directory "~/Music/mp3")
   (bl/leader-key-def
-    "am"  '(:ignore t :which-key "media")
-    "amp" '(emms-pause :which-key "play / pause")
-    "amf" '(emms-play-file :which-key "play file")))
+    "a"  '(:ignore t :which-key "media")
+    "ap" '(emms-pause :which-key "play / pause")
+    "af" '(emms-play-file :which-key "play file")))
 
 (use-package magit
   :ensure t
@@ -886,3 +898,11 @@
 (setq git-link-open-in-browser t)
 (bl/leader-key-def
       "gL"  'git-link))
+
+(use-package auto-complete
+:ensure t
+:init
+(progn
+(ac-config-default)
+(global-auto-complete-mode t)
+))
