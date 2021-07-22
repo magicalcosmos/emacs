@@ -4,7 +4,6 @@
   #+begin_src emacs-lisp
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
   #+end_src
-* Av
 * Themes
 #+begin_src emacs-lisp
 (use-package all-the-icons)
@@ -337,12 +336,13 @@
   #+end_src
 * Yasnippet
   #+begin_src emacs-lisp
-    (use-package yasnippet
-      :ensure t
-      :init
-	(yas-global-mode 1))
-(use-package auto-yasnippet
-:ensure t)
+        (use-package yasnippet
+        :hook (prog-mode . yas-minor-mode)
+        :config
+    (setq yas-snippet-dirs
+          '("~/.emacs.d/snippets"                 ;; personal snippets
+            ))
+        (yas-reload-all)) 
   #+end_src
 
 * Undo Tree
@@ -1095,4 +1095,10 @@ These templates enable you to type things like <el and then hit Tab to expand th
 (ac-config-default)
 (global-auto-complete-mode t)
 ))
+#+end_src
+
+* Log
+#+begin_src emacs-lisp
+(use-package command-log-mode
+:ensure t)
 #+end_src

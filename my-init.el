@@ -275,11 +275,12 @@
   (global-flycheck-mode t))
 
 (use-package yasnippet
-      :ensure t
-      :init
-	(yas-global-mode 1))
-(use-package auto-yasnippet
-:ensure t)
+    :hook (prog-mode . yas-minor-mode)
+    :config
+(setq yas-snippet-dirs
+      '("~/.emacs.d/snippets"                 ;; personal snippets
+        ))
+    (yas-reload-all))
 
 (use-package undo-tree
   :ensure t
@@ -916,3 +917,6 @@
 (ac-config-default)
 (global-auto-complete-mode t)
 ))
+
+(use-package command-log-mode
+:ensure t)

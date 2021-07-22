@@ -12,8 +12,11 @@
 (setq visible-bell t) ;; set up the visiable bell
 (fset 'yes-or-no-p 'y-or-n-p)
 (global-set-key (kbd "<f5>") 'revert-buffer)
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 (global-set-key (kbd "C-t") 'treemacs)
+;; ESC Cancels All
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+;; Rebind C-u
+(global-set-key (kbd "C-M-u") 'universal-argument)
 
 ;; set realtive numbers
 ;; set type of line numbering (global variable)
@@ -25,11 +28,34 @@
 (global-hl-line-mode 1)
 
 (delete-selection-mode t)
-(setq gc-cons-threshold 100000000)
+
 (setq read-process-output-max (* 1024 1024)) ;; 1mb
 (setq auto-save-default nil)
 (setq make-backup-files nil)
 (setq create-lockfiles nil)
+;; Improve scrolling.
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1)
+;; Set frame transparency and maximize windows by default.
+(set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+(add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+(set-frame-parameter (selected-frame) 'fullscreen 'maximized)
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; The default is 800 kilobytes.  Measured in bytes.
+(setq gc-cons-threshold (* 50 1000 1000))
+
+;; Profile emacs startup
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "*** Emacs loaded in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
+
+
 ;; Silence compiler warnings as they can be pretty disruptive
 (setq native-comp-async-report-warnings-errors nil)
 (setq large-file-warning-threshold nil)
@@ -82,12 +108,12 @@
 (unless (package-installed-p 'use-package)
 (package-refresh-contents)
 (package-install 'use-package))
-;; ESC Cancels All
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-;; Rebind C-u
-(global-set-key (kbd "C-M-u") 'universal-argument)
-
-
+(use-package use-package-chords
+  :ensure t
+  :disabled
+  :config (key-chord-mode 1))
+(use-package diminish
+  :ensure t)
 (org-babel-load-file (expand-file-name "~/.emacs.d/my-init.org"))
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -103,7 +129,7 @@
  '(org-startup-folded 'overview)
  '(org-startup-indented t)
  '(package-selected-packages
-   '(dumb-jump dired+ emmet-mode emms mpv matrix-client vterm eshell-toggle rainbow-mode rainbow-delimiters smartparens yaml-mode impatient-mode go-mode typescript-mode apheleia nvm dap-mode git-link evil-org openwith expand-region visual-fill-column default-text-scale general better-shell undo-tree yasnippet flycheck json-mode company which-key treemacs-projectile treemacs web-mode gruvbox-theme grubbox-theme grubbox-thtme try use-package)))
+   '(diminish command-log-mode dumb-jump dired+ emmet-mode emms mpv matrix-client vterm eshell-toggle rainbow-mode rainbow-delimiters smartparens yaml-mode impatient-mode go-mode typescript-mode apheleia nvm dap-mode git-link evil-org openwith expand-region visual-fill-column default-text-scale general better-shell undo-tree yasnippet flycheck json-mode company which-key treemacs-projectile treemacs web-mode gruvbox-theme grubbox-theme grubbox-thtme try use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
