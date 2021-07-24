@@ -1,31 +1,111 @@
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
-(use-package all-the-icons)
-(use-package doom-themes
-  :ensure t
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-one t)
+(setq package-enable-at-startup nil)
 
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; or for treemacs users
-  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-  (doom-themes-treemacs-config)
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config))
+(use-package all-the-icons)
+      (use-package doom-themes
+      :ensure t
+      :config
+      ;; Global settings (defaults)
+      (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+            doom-themes-enable-italic t) ; if nil, italics is universally disabled
+      (load-theme 'doom-one t)
+
+      ;; Enable flashing mode-line on errors
+      (doom-themes-visual-bell-config)
+      ;; Enable custom neotree theme (all-the-icons must be installed!)
+      (doom-themes-neotree-config)
+      ;; or for treemacs users
+      (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+      (doom-themes-treemacs-config)
+      ;; Corrects (and improves) org-mode's native fontification.
+      (doom-themes-org-config))
+      (use-package smart-mode-line
+      :init
+      (setq sml/no-confirm-load-theme t
+      sml/theme 'respectful
+    sml/mode-width 'right
+  sml/name-width 60)
+        (sml/setup))
+  
+
+  (setq rm-excluded-modes
+    (mapconcat
+      'identity
+      ; These names must start with a space!
+      '(" GitGutter" " MRev" " company"
+      " Helm" " Undo-Tree" " Projectile.*" " Z" " Ind"
+      " Org-Agenda.*" " ElDoc" " SP/s" " cider.*")
+      "\\|"))
+(use-package perspective
+  :demand t
+  :bind (("C-M-k" . persp-switch)
+         ("C-M-n" . persp-next)
+         ("C-x k" . persp-kill-buffer*))
+  :custom
+  (persp-initial-frame-name "Main")
+  :config
+  ;; Running `persp-mode' multiple times resets the perspective list...
+  (unless (equal persp-mode t)
+    (persp-mode)))
 
 ;; Download Evil
-(unless (package-installed-p 'evil)
-(package-install 'evil))
+                ;;(unless (package-installed-p 'evil)
+                ;;(package-install 'evil))
 
-;; Enable Evil
-(require 'evil)
-(evil-mode 1)
+                ;; Enable Evil
+                ;;(require 'evil)
+                ;;(evil-mode 1)
+            (defun bl/evil-hook ()
+              (dolist (mode '(custom-mode
+                              eshell-mode
+                              git-rebase-mode
+                              erc-mode
+                              circe-server-mode
+                              circe-chat-mode
+                              circe-query-mode
+                              sauron-mode
+                              term-mode))
+              (add-to-list 'evil-emacs-state-modes mode)))
+        (defun bl/dont-arrow-me-bro ()
+          (interactive)
+          (message "Arrow keys are bad, you know?"))
+    (use-package evil
+      :init
+      (setq evil-want-integration t)
+      (setq evil-want-keybinding nil)
+      (setq evil-want-C-u-scroll t)
+      (setq evil-want-C-i-jump nil)
+      (setq evil-respect-visual-line-mode t)
+      :config
+      (add-hook 'evil-mode-hook 'bl/evil-hook)
+      (evil-mode 1)
+      (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+      (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+      ;; Use visual line motions even outside of visual-line-mode buffers
+      (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+      (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+      (unless bl/is-termux
+        ;; Disable arrow keys in normal and visual modes
+        (define-key evil-normal-state-map (kbd "<left>") 'bl/dont-arrow-me-bro)
+        (define-key evil-normal-state-map (kbd "<right>") 'bl/dont-arrow-me-bro)
+        (define-key evil-normal-state-map (kbd "<down>") 'bl/dont-arrow-me-bro)
+        (define-key evil-normal-state-map (kbd "<up>") 'bl/dont-arrow-me-bro)
+        (evil-global-set-key 'motion (kbd "<left>") 'bl/dont-arrow-me-bro)
+        (evil-global-set-key 'motion (kbd "<right>") 'bl/dont-arrow-me-bro)
+        (evil-global-set-key 'motion (kbd "<down>") 'bl/dont-arrow-me-bro)
+        (evil-global-set-key 'motion (kbd "<up>") 'bl/dont-arrow-me-bro))
+
+      (evil-set-initial-state 'messages-buffer-mode 'normal)
+      (evil-set-initial-state 'dashboard-mode 'normal))
+(use-package evil-collection
+  :after evil
+  :custom
+  (evil-collection-outline-bind-tab-p nil)
+  :config
+  (evil-collection-init))
 
 (require 'org-tempo)
 
@@ -225,49 +305,74 @@
 (use-package json-mode
   :ensure t)
 
-(use-package counsel
-:ensure t
-  :bind
-  (("M-y" . counsel-yank-pop)
-   :map ivy-minibuffer-map
-   ("M-y" . ivy-next-line)))
+(use-package hydra
+  :defer 1)
+       (use-package counsel
+    :ensure t
+      :bind
+      (("M-y" . counsel-yank-pop)
+       :map ivy-minibuffer-map
+       ("M-y" . ivy-next-line)))
 
 
-
-
-  (use-package ivy
-  :ensure t
-  :diminish (ivy-mode)
-  :bind (("C-x b" . ivy-switch-buffer))
-  :config
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper)
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
+  :init
   (ivy-mode 1)
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "%d/%d ")
-  (setq ivy-display-style 'fancy))
-
-
-  (use-package swiper
-  :ensure t
-  :bind (("C-s" . swiper-isearch)
-   ("C-r" . swiper-isearch)
-   ("C-c C-r" . ivy-resume)
-   ("M-x" . counsel-M-x)
-   ("C-x C-f" . counsel-find-file))
   :config
-  (progn
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-display-style 'fancy)
-    (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-    ))
-(bl/leader-key-def
-  "r"   '(ivy-resume :which-key "ivy resume")
-  "f"   '(:ignore t :which-key "files")
-  "ff"  '(counsel-find-file :which-key "open file")
-  "C-f" 'counsel-find-file
-  "fr"  '(counsel-recentf :which-key "recent files")
-  "fR"  '(revert-buffer :which-key "revert file")
-  "fj"  '(counsel-file-jump :which-key "jump to file"))
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-wrap t)
+  (setq ivy-count-format "(%d/%d) ")
+  (setq enable-recursive-minibuffers t)
+
+  ;; Use different regex strategies per completion command
+  (push '(completion-at-point . ivy--regex-fuzzy) ivy-re-builders-alist) ;; This doesn't seem to work...
+  (push '(swiper . ivy--regex-ignore-order) ivy-re-builders-alist)
+  (push '(counsel-M-x . ivy--regex-ignore-order) ivy-re-builders-alist)
+
+  ;; Set minibuffer height for different commands
+  (setf (alist-get 'counsel-projectile-ag ivy-height-alist) 15)
+  (setf (alist-get 'counsel-projectile-rg ivy-height-alist) 15)
+  (setf (alist-get 'swiper ivy-height-alist) 15)
+  (setf (alist-get 'counsel-switch-buffer ivy-height-alist) 7))
+
+
+
+      (use-package swiper
+      :ensure t
+      :bind (
+       ("C-r" . swiper-isearch)
+       ("C-c C-r" . ivy-resume)
+       ("M-x" . counsel-M-x)
+       ("C-x C-f" . counsel-find-file))
+      :config
+      (progn
+        (ivy-mode 1)
+        (setq ivy-use-virtual-buffers t)
+        (setq ivy-display-style 'fancy)
+        (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+        ))
+    (bl/leader-key-def
+      "r"   '(ivy-resume :which-key "ivy resume")
+      "f"   '(:ignore t :which-key "files")
+      "ff"  '(counsel-find-file :which-key "open file")
+      "C-f" 'counsel-find-file
+      "fr"  '(counsel-recentf :which-key "recent files")
+      "fR"  '(revert-buffer :which-key "revert file")
+      "fj"  '(counsel-file-jump :which-key "jump to file"))
 
 (use-package flycheck
   :ensure t
@@ -477,7 +582,7 @@
       :ensure t
       :pin org)
 
-    (setenv "BROWSER" "firefox")
+    (setenv "BROWSER" "Chrome")
     (use-package org-bullets
       :ensure t
       :config
@@ -878,37 +983,104 @@
     "af" '(emms-play-file :which-key "play file"))
 
 (use-package magit
-  :ensure t
-  :bind ("C-M-;" . magit-status)
-  :commands (magit-status magit-get-current-branch)
-  :custom
-  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+    :ensure t
+    :bind ("C-M-;" . magit-status)
+    :commands (magit-status magit-get-current-branch)
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-(bl/leader-key-def
-  "g"   '(:ignore t :which-key "git")
-  "gs"  'magit-status
-  "gd"  'magit-diff-unstaged
-  "gc"  'magit-branch-or-checkout
-  "gl"   '(:ignore t :which-key "log")
-  "glc" 'magit-log-current
-  "glf" 'magit-log-buffer-file
-  "gb"  'magit-branch
-  "gP"  'magit-push-current
-  "gp"  'magit-pull-branch
-  "gf"  'magit-fetch
-  "gF"  'magit-fetch-all
-  "gr"  'magit-rebase)
-  (use-package forge
-:disabled)
-(use-package magit-todos
-:defer t)
-(use-package git-link
-:ensure t
-:commands git-link
-:config
-(setq git-link-open-in-browser t)
-(bl/leader-key-def
-      "gL"  'git-link))
+  (bl/leader-key-def
+    "g"   '(:ignore t :which-key "git")
+    "gs"  'magit-status
+    "gd"  'magit-diff-unstaged
+    "gc"  'magit-branch-or-checkout
+    "gl"   '(:ignore t :which-key "log")
+    "glc" 'magit-log-current
+    "glf" 'magit-log-buffer-file
+    "gb"  'magit-branch
+    "gP"  'magit-push-current
+    "gp"  'magit-pull-branch
+    "gf"  'magit-fetch
+    "gF"  'magit-fetch-all
+    "gr"  'magit-rebase)
+    (use-package forge
+  :disabled)
+  (use-package magit-todos
+  :defer t)
+  (use-package git-link
+  :ensure t
+  :commands git-link
+  :config
+  (setq git-link-open-in-browser t)
+  (bl/leader-key-def
+        "gL"  'git-link))
+
+(use-package git-gutter-fringe)
+
+(use-package git-gutter
+  :ensure t
+  :diminish
+  :hook ((text-mode . git-gutter-mode)
+         (prog-mode . git-gutter-mode))
+  :config
+  (setq git-gutter:update-interval 2)
+  (unless bl/is-termux
+    (require 'git-gutter-fringe)
+    (set-face-foreground 'git-gutter-fr:added "LightGreen")
+    (fringe-helper-define 'git-gutter-fr:added nil
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX")
+
+    (set-face-foreground 'git-gutter-fr:modified "LightGoldenrod")
+    (fringe-helper-define 'git-gutter-fr:modified nil
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX")
+
+    (set-face-foreground 'git-gutter-fr:deleted "LightCoral")
+    (fringe-helper-define 'git-gutter-fr:deleted nil
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      ".........."
+      ".........."
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"
+      "XXXXXXXXXX"))
+
+  ;; These characters are used in terminal mode
+  (setq git-gutter:modified-sign "≡")
+  (setq git-gutter:added-sign "≡")
+  (setq git-gutter:deleted-sign "≡")
+  (set-face-foreground 'git-gutter:added "LightGreen")
+  (set-face-foreground 'git-gutter:modified "LightGoldenrod")
+  (set-face-foreground 'git-gutter:deleted "LightCoral"))
 
 (use-package auto-complete
 :ensure t
@@ -920,3 +1092,7 @@
 
 (use-package command-log-mode
 :ensure t)
+
+(use-package drag-stuff
+ :bind(("<M-up>" . drag-stuff-up)
+ ("<M-down>" . drag-stuff-updown)))

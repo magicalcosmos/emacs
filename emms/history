@@ -1,9 +1,9 @@
 ;;; emms history -*- mode: emacs-lisp; coding: utf-8; -*-
 (
 ;; active playlist
-" *EMMS Playlist*"
+" *temp*"
 ;; playlists: ((BUFFER_NAME SELECT_POSITION TRACKS) ...)
-((" *EMMS Playlist*" 1 ((*track* (type . file) (name . "/Users/brodyliao/Music/mp3/和你一样.mp3") (info-tracknumber . "1") (info-title . #("ÇúÄ¿ 1" 0 6 (charset iso-8859-1))) (info-artist . #("ÀîÓî´º" 0 6 (charset iso-8859-1))) (info-album . #("ºÍÄãÒ»Ñù" 0 8 (charset iso-8859-1))) (info-mtime 24578 57668 0 0)))))
+nil
 ;; play method
 ((emms-repeat-track) (emms-repeat-playlist))
 )

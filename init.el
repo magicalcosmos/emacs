@@ -44,7 +44,7 @@
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;; The default is 800 kilobytes.  Measured in bytes.
-(setq gc-cons-threshold (* 50 1000 1000))
+(setq gc-cons-threshold most-positive-fixnum)
 
 ;; Profile emacs startup
 (add-hook 'emacs-startup-hook
@@ -71,7 +71,10 @@
                                            "\nThis is the GNU system.  Welcome.\n")))
 ;; set font size
 (set-default-coding-systems 'utf-8)
-
+(prefer-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
 ;; Set font size 180 = 18pt
 (set-face-attribute 'default nil :height 180)
 
@@ -79,7 +82,8 @@
 ;;'("melpa" . "https://melpa.org/packages/"))
 (require 'package)
 (setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
-                         ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+                         ("melpa" . "http://elpa.emacs-china.org/melpa/")
+                         ("org" . "http://elpa.emacs-china.org/org/")))
 
 ;; Mode line
 (setq display-time-format "%l:%M %p %b %y"
@@ -108,31 +112,24 @@
 (unless (package-installed-p 'use-package)
 (package-refresh-contents)
 (package-install 'use-package))
+(setq use-package-always-ensure t)
 (use-package use-package-chords
   :ensure t
   :disabled
   :config (key-chord-mode 1))
 (use-package diminish
   :ensure t)
+(use-package restart-emacs)
 (org-babel-load-file (expand-file-name "~/.emacs.d/my-init.org"))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(org-confirm-babel-evaluate nil)
- '(org-default-notes-file (concat org-directory "/notes.org"))
- '(org-directory "~/Sync/orgfiles")
- '(org-export-html-postamble nil)
- '(org-hide-leading-stars t)
- '(org-src-fontify-natively t)
- '(org-startup-folded 'overview)
- '(org-startup-indented t)
- '(package-selected-packages
-   '(diminish command-log-mode dumb-jump dired+ emmet-mode emms mpv matrix-client vterm eshell-toggle rainbow-mode rainbow-delimiters smartparens yaml-mode impatient-mode go-mode typescript-mode apheleia nvm dap-mode git-link evil-org openwith expand-region visual-fill-column default-text-scale general better-shell undo-tree yasnippet flycheck json-mode company which-key treemacs-projectile treemacs web-mode gruvbox-theme grubbox-theme grubbox-thtme try use-package)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load-file custom-file))
+;; get system type
+(defconst *is-mac* (eq system-type 'darwin))
+(defconst *is-linux* (eq system-type 'gnu/linux))
+(defconst *is-windows* (or (eq system-type 'ms-dos)(eq system-type 'windows-nt)))
+
+;; command key to meta for default
+(when *is-mac*
+    (setq mac-command-modifier 'meta
+     mac-option-modifier 'none))
