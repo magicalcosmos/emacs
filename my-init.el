@@ -49,63 +49,56 @@
   (unless (equal persp-mode t)
     (persp-mode)))
 
-;; Download Evil
-                ;;(unless (package-installed-p 'evil)
-                ;;(package-install 'evil))
+(defun bl/evil-hook ()
+  (dolist (mode '(custom-mode
+                  eshell-mode
+                  git-rebase-mode
+                  erc-mode
+                  circe-server-mode
+                  circe-chat-mode
+                  circe-query-mode
+                  sauron-mode
+                  term-mode))
+  (add-to-list 'evil-emacs-state-modes mode)))
+(defun bl/dont-arrow-me-bro ()
+(interactive)
+(message "Arrow keys are bad, you know?"))
+        (use-package evil
+          :init
+          (setq evil-want-integration t)
+          (setq evil-want-keybinding nil)
+          (setq evil-want-C-u-scroll t)
+          (setq evil-want-C-i-jump nil)
+          (setq evil-respect-visual-line-mode t)
+          :config
+          (add-hook 'evil-mode-hook 'bl/evil-hook)
+          (evil-mode 1)
+          (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+          (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
-                ;; Enable Evil
-                ;;(require 'evil)
-                ;;(evil-mode 1)
-            (defun bl/evil-hook ()
-              (dolist (mode '(custom-mode
-                              eshell-mode
-                              git-rebase-mode
-                              erc-mode
-                              circe-server-mode
-                              circe-chat-mode
-                              circe-query-mode
-                              sauron-mode
-                              term-mode))
-              (add-to-list 'evil-emacs-state-modes mode)))
-        (defun bl/dont-arrow-me-bro ()
-          (interactive)
-          (message "Arrow keys are bad, you know?"))
-    (use-package evil
-      :init
-      (setq evil-want-integration t)
-      (setq evil-want-keybinding nil)
-      (setq evil-want-C-u-scroll t)
-      (setq evil-want-C-i-jump nil)
-      (setq evil-respect-visual-line-mode t)
+          ;; Use visual line motions even outside of visual-line-mode buffers
+          (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+          (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+          (unless bl/is-termux
+            ;; Disable arrow keys in normal and visual modes
+            (define-key evil-normal-state-map (kbd "<left>") 'bl/dont-arrow-me-bro)
+            (define-key evil-normal-state-map (kbd "<right>") 'bl/dont-arrow-me-bro)
+            (define-key evil-normal-state-map (kbd "<down>") 'bl/dont-arrow-me-bro)
+            (define-key evil-normal-state-map (kbd "<up>") 'bl/dont-arrow-me-bro)
+            (evil-global-set-key 'motion (kbd "<left>") 'bl/dont-arrow-me-bro)
+            (evil-global-set-key 'motion (kbd "<right>") 'bl/dont-arrow-me-bro)
+            (evil-global-set-key 'motion (kbd "<down>") 'bl/dont-arrow-me-bro)
+            (evil-global-set-key 'motion (kbd "<up>") 'bl/dont-arrow-me-bro))
+
+          (evil-set-initial-state 'messages-buffer-mode 'normal)
+          (evil-set-initial-state 'dashboard-mode 'normal))
+    (use-package evil-collection
+      :after evil
+      :custom
+      (evil-collection-outline-bind-tab-p nil)
       :config
-      (add-hook 'evil-mode-hook 'bl/evil-hook)
-      (evil-mode 1)
-      (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-      (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-
-      ;; Use visual line motions even outside of visual-line-mode buffers
-      (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-      (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-      (unless bl/is-termux
-        ;; Disable arrow keys in normal and visual modes
-        (define-key evil-normal-state-map (kbd "<left>") 'bl/dont-arrow-me-bro)
-        (define-key evil-normal-state-map (kbd "<right>") 'bl/dont-arrow-me-bro)
-        (define-key evil-normal-state-map (kbd "<down>") 'bl/dont-arrow-me-bro)
-        (define-key evil-normal-state-map (kbd "<up>") 'bl/dont-arrow-me-bro)
-        (evil-global-set-key 'motion (kbd "<left>") 'bl/dont-arrow-me-bro)
-        (evil-global-set-key 'motion (kbd "<right>") 'bl/dont-arrow-me-bro)
-        (evil-global-set-key 'motion (kbd "<down>") 'bl/dont-arrow-me-bro)
-        (evil-global-set-key 'motion (kbd "<up>") 'bl/dont-arrow-me-bro))
-
-      (evil-set-initial-state 'messages-buffer-mode 'normal)
-      (evil-set-initial-state 'dashboard-mode 'normal))
-(use-package evil-collection
-  :after evil
-  :custom
-  (evil-collection-outline-bind-tab-p nil)
-  :config
-  (evil-collection-init))
+      (evil-collection-init))
 
 (require 'org-tempo)
 
@@ -307,72 +300,115 @@
 
 (use-package hydra
   :defer 1)
-       (use-package counsel
-    :ensure t
-      :bind
-      (("M-y" . counsel-yank-pop)
-       :map ivy-minibuffer-map
-       ("M-y" . ivy-next-line)))
 
-
-(use-package ivy
-  :diminish
-  :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)
-         ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
-         ("C-l" . ivy-done)
-         ("C-d" . ivy-switch-buffer-kill)
-         :map ivy-reverse-i-search-map
-         ("C-k" . ivy-previous-line)
-         ("C-d" . ivy-reverse-i-search-kill))
-  :init
-  (ivy-mode 1)
-  :config
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-wrap t)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq enable-recursive-minibuffers t)
-
-  ;; Use different regex strategies per completion command
-  (push '(completion-at-point . ivy--regex-fuzzy) ivy-re-builders-alist) ;; This doesn't seem to work...
-  (push '(swiper . ivy--regex-ignore-order) ivy-re-builders-alist)
-  (push '(counsel-M-x . ivy--regex-ignore-order) ivy-re-builders-alist)
-
-  ;; Set minibuffer height for different commands
-  (setf (alist-get 'counsel-projectile-ag ivy-height-alist) 15)
-  (setf (alist-get 'counsel-projectile-rg ivy-height-alist) 15)
-  (setf (alist-get 'swiper ivy-height-alist) 15)
-  (setf (alist-get 'counsel-switch-buffer ivy-height-alist) 7))
-
-
-
-      (use-package swiper
-      :ensure t
-      :bind (
-       ("C-r" . swiper-isearch)
-       ("C-c C-r" . ivy-resume)
-       ("M-x" . counsel-M-x)
-       ("C-x C-f" . counsel-find-file))
+    (use-package ivy
+      :diminish
+      :bind (("C-s" . swiper)
+              :map ivy-minibuffer-map
+              ("TAB" . ivy-alt-done)
+              ("C-l" . ivy-alt-done)
+              ("C-j" . ivy-next-line)
+              ("C-k" . ivy-previous-line)
+              :map ivy-switch-buffer-map
+              ("C-k" . ivy-previous-line)
+              ("C-l" . ivy-done)
+              ("C-d" . ivy-switch-buffer-kill)
+              :map ivy-reverse-i-search-map
+              ("C-k" . ivy-previous-line)
+              ("C-d" . ivy-reverse-i-search-kill))
+      :init
+      (ivy-mode 1)
       :config
-      (progn
-        (ivy-mode 1)
-        (setq ivy-use-virtual-buffers t)
-        (setq ivy-display-style 'fancy)
-        (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
-        ))
-    (bl/leader-key-def
-      "r"   '(ivy-resume :which-key "ivy resume")
-      "f"   '(:ignore t :which-key "files")
-      "ff"  '(counsel-find-file :which-key "open file")
-      "C-f" 'counsel-find-file
-      "fr"  '(counsel-recentf :which-key "recent files")
-      "fR"  '(revert-buffer :which-key "revert file")
-      "fj"  '(counsel-file-jump :which-key "jump to file"))
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-wrap t)
+      (setq ivy-count-format "(%d/%d) ")
+      (setq enable-recursive-minibuffers t)
+
+      ;; Use different regex strategies per completion command
+      (push '(completion-at-point . ivy--regex-fuzzy) ivy-re-builders-alist) ;; This doesn't seem to work...
+      (push '(swiper . ivy--regex-ignore-order) ivy-re-builders-alist)
+      (push '(counsel-M-x . ivy--regex-ignore-order) ivy-re-builders-alist)
+
+      ;; Set minibuffer height for different commands
+      (setf (alist-get 'counsel-projectile-ag ivy-height-alist) 15)
+      (setf (alist-get 'counsel-projectile-rg ivy-height-alist) 15)
+      (setf (alist-get 'swiper ivy-height-alist) 15)
+      (setf (alist-get 'counsel-switch-buffer ivy-height-alist) 7))
+
+
+(use-package ivy-hydra
+  :defer t
+  :after hydra)
+  
+(use-package all-the-icons-ivy-rich
+  :ensure t
+  :init (all-the-icons-ivy-rich-mode 1))
+
+(use-package ivy-rich
+  :ensure t
+  :init (ivy-rich-mode 1))
+;; Whether display the colorful icons.
+;; It respects `all-the-icons-color-icons'.
+(setq all-the-icons-ivy-rich-color-icon t)
+
+;; The icon size
+(setq all-the-icons-ivy-rich-icon-size 1.0)
+
+;; Whether support project root
+(setq all-the-icons-ivy-rich-project t)
+
+;; Definitions for ivy-rich transformers.
+;; See `ivy-rich-display-transformers-list' for details."
+all-the-icons-ivy-rich-display-transformers-list
+
+;; Slow Rendering
+;; If you experience a slow down in performance when rendering multiple icons simultaneously,
+;; you can try setting the following variable
+(setq inhibit-compacting-font-caches t)
+;; set icons
+(defun ivy-rich-switch-buffer-icon (candidate)
+  (with-current-buffer
+      (get-buffer candidate)
+    (let ((icon (all-the-icons-icon-for-mode major-mode)))
+      (if (symbolp icon)
+          (all-the-icons-icon-for-mode 'fundamental-mode)
+        icon))))
+(setq ivy-rich-display-transformers-list
+      '(ivy-switch-buffer
+        (:columns
+          ((ivy-rich-switch-buffer-icon (:width 2))
+          (ivy-rich-candidate (:width 30))
+          (ivy-rich-switch-buffer-size (:width 7))
+          (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+          (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+          (ivy-rich-switch-buffer-project (:width 15 :face success))
+          (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
+          :predicate
+          (lambda (cand) (get-buffer cand)))))
+;; swiper
+(use-package swiper
+:ensure t
+:bind (
+  ("C-r" . swiper-isearch)
+  ("C-c C-r" . ivy-resume)
+  ("C-c f" . counsel-recentf)
+  ("M-x" . counsel-M-x)
+  ("C-x C-f" . counsel-find-file))
+:config
+(progn
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-display-style 'fancy)
+  (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+  ))
+(bl/leader-key-def
+"r"   '(ivy-resume :which-key "ivy resume")
+"f"   '(:ignore t :which-key "files")
+"ff"  '(counsel-find-file :which-key "open file")
+"C-f" 'counsel-find-file
+"fr"  '(counsel-recentf :which-key "recent files")
+"fR"  '(revert-buffer :which-key "revert file")
+"fj"  '(counsel-file-jump :which-key "jump to file"))
 
 (use-package flycheck
   :ensure t

@@ -130,6 +130,6 @@
 (defconst *is-windows* (or (eq system-type 'ms-dos)(eq system-type 'windows-nt)))
 
 ;; command key to meta for default
-(when *is-mac*
-    (setq mac-command-modifier 'meta
-     mac-option-modifier 'none))
+;;(when *is-mac*
+;;    (setq mac-command-modifier 'meta
+;;     mac-option-modifier 'none))
