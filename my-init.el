@@ -298,6 +298,18 @@
 (use-package json-mode
   :ensure t)
 
+(use-package counsel-etags
+  :ensure t
+  :bind (("C-]" . counsel-etags-grep-current-directory))
+  :init
+  (add-hook 'prog-mode-hook
+        (lambda ()
+          (add-hook 'after-save-hook
+            'counsel-etags-virtual-update-tags 'append 'local)))
+  :config
+  (setq counsel-etags-update-interval 60)
+  (push "build" counsel-etags-ignore-directories))
+
 (use-package hydra
   :defer 1)
 
@@ -339,7 +351,7 @@
 (use-package ivy-hydra
   :defer t
   :after hydra)
-  
+
 (use-package all-the-icons-ivy-rich
   :ensure t
   :init (all-the-icons-ivy-rich-mode 1))
@@ -1132,3 +1144,13 @@ all-the-icons-ivy-rich-display-transformers-list
 (use-package drag-stuff
  :bind(("<M-up>" . drag-stuff-up)
  ("<M-down>" . drag-stuff-updown)))
+
+(use-package ivy-posframe
+    :ensure t)
+;; Different command can use different display function.
+(setq ivy-posframe-display-functions-alist
+      '((swiper          . ivy-posframe-display-at-point)
+        (complete-symbol . ivy-posframe-display-at-point)
+        (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
+        (t               . ivy-posframe-display)))
+(ivy-posframe-mode 1)

@@ -479,6 +479,8 @@
         "fr"  '(counsel-recentf :which-key "recent files")
         "fR"  '(revert-buffer :which-key "revert file")
         "fj"  '(counsel-file-jump :which-key "jump to file"))
+
+   
   #+end_src
 
   
@@ -705,6 +707,8 @@
     (bl/leader-key-def
       "C-p" 'fzf)
   #+end_src
+
+  #+RESULTS:
 
 * All the icons
   #+begin_src emacs-lisp
@@ -1331,4 +1335,17 @@ These templates enable you to type things like <el and then hit Tab to expand th
    :bind(("<M-up>" . drag-stuff-up)
    ("<M-down>" . drag-stuff-updown)))
 
+#+end_src
+
+* Ivy-posframe
+#+begin_src emacs-lisp
+  (use-package ivy-posframe
+    :ensure t)
+;; Different command can use different display function.
+(setq ivy-posframe-display-functions-alist
+      '((swiper          . ivy-posframe-display-at-point)
+        (complete-symbol . ivy-posframe-display-at-point)
+        (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
+        (t               . ivy-posframe-display)))
+(ivy-posframe-mode 1)
 #+end_src
