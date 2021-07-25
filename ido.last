@@ -23,6 +23,8 @@
 
 ;; ----- ido-dir-file-cache -----
 (
+ ("/Users/brodyliao/.emacs.d/" (24828 45540 662943 30000) ".lsp-session-v1" "games/" ".cache/" ".git/" "elpa/" "my-init.el" "recentf" "emms/" "my-init.org" ".gitignore" "init.el" "auto-save-list/" "eln-cache/" "custom.el" "transient/" "projectile-bookmarks.eld" "my-init.org_archive" ".extension/" "eshell/" "ido.last" "snippets/" "per-system-settings.el" "ac-comphist.dat" "../" "./")
+
  ("/Users/brodyliao/workspace/web/rocket-web/src/" (24828 45006 985061 100000) "router/" "store/" "vendor/" ".tern-port" "shims-vue.d.ts" "views/" "i18n/" "service/" "permission.ts" "api/" "pwa/" "icons/" "theme/" "components/" "styles/" "shims-tsx.d.ts" "utils/" "config.json" "main.ts" "interface/" "App.vue" "filters/" "directives/" "../" "./")
 
  ("/Users/brodyliao/workspace/web/rocket-web/src/directives/" (24828 44949 678743 106000) "auth.ts" ".tern-port" "index.ts" "hide.ts" "../" "./")
@@ -30,8 +32,6 @@
  ("/Users/brodyliao/workspace/web/rocket-web/src/utils/" (24828 39987 918661 874000) "testCase.bak.js" "auth.ts" "hash.js" "utils.js" "log.ts" "report.js" "redefined.js" "uuid.js" "d3ContextMenu.js" "popper.ts" "treeTableEval.js" "request.ts" "drag.ts" "variable.ts" "utils_test.js" "testCase.js" "index.js" "common.ts" "time.js" "dict.ts" "ajax.ts" "localStorage.ts" "request.js" "sha256.js" "testCaseForReport.js" "websocket.ts" "../" "./")
 
  ("/Users/brodyliao/workspace/web/rocket-web/src/views/" (24828 39987 918909 862000) "NotFound.vue" "Redirect.vue" "tester/" "ChangePassword.vue" "InvalidLicense.vue" "worker.vue.demo" "Login.vue" "VersionInfo.vue" "TestComponents.vue" "systemManagement/" "../" "./")
-
- ("/Users/brodyliao/.emacs.d/" (24828 41102 610580 320000) ".lsp-session-v1" "games/" ".cache/" ".git/" "elpa/" "my-init.el" "recentf" "emms/" "my-init.org" ".gitignore" "init.el" "auto-save-list/" "eln-cache/" "custom.el" "transient/" "projectile-bookmarks.eld" "my-init.org_archive" ".extension/" "eshell/" "ido.last" "snippets/" "per-system-settings.el" "ac-comphist.dat" "../" "./")
 
  ("/Users/brodyliao/workspace/web/rocket-web/src/api/" (24828 39987 880221 366000) "builder.js" "userInformation.ts" "api.js" "index.ts" "tester/" "authorization.ts" "urls.ts" "systemManagement/" "../" "./")
 

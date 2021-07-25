@@ -1,2 +1,9 @@
 elpa
 .cache
+ido*
+auto-save-list
+projectile-bookmarks.eld
+recentf
+ac-comphist.dat
+tern*
+**/*/tern*

@@ -61,7 +61,7 @@
 #+end_src
 
 
-* TODO Evil mode
+* DONE Evil mode
   #+begin_src emacs-lisp
 (defun bl/evil-hook ()
   (dolist (mode '(custom-mode
@@ -1185,18 +1185,6 @@ These templates enable you to type things like <el and then hit Tab to expand th
          typescript-mode
          js2-mode))
 #+end_src
-* Toggling Eshell
-#+begin_src emacs-lisp
-(use-package eshell-toggle
-  :ensure t
-  :after eshell
-  :bind ("C-M-'" . eshell-toggle)
-  :custom
-  (eshell-toggle-size-fraction 3)
-  (eshell-toggle-use-projectile-root t)
-  (eshell-toggle-run-command nil))
-
-#+end_src
 * vterm
 #+begin_src emacs-lisp
 (use-package vterm
@@ -1366,4 +1354,17 @@ These templates enable you to type things like <el and then hit Tab to expand th
         (counsel-find-file     . ivy-posframe-display-at-window-center)
         (t               . ivy-posframe-display-at-window-center)))
 (ivy-posframe-mode 1)
+#+end_src
+
+* Toggle Eshell
+#+begin_src emacs-lisp
+(use-package eshell-toggle
+  :ensure t
+  :after eshell
+  :bind ("C-M-'" . eshell-toggle)
+  :custom
+  (eshell-toggle-size-fraction 3)
+  (eshell-toggle-use-projectile-root t)
+  (eshell-toggle-run-command nil))
+
 #+end_src
