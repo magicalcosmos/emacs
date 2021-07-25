@@ -4,7 +4,7 @@
   #+begin_src emacs-lisp
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
   #+end_src
-* Straigt
+* Straight
 #+begin_src emacs-lisp
 
 (setq package-enable-at-startup nil)
@@ -301,6 +301,26 @@
 (add-hook 'python-mode-hook 'my/python-mode-hook)
   #+end_src
 
+* Web-mode
+  #+begin_src emacs-lisp
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+      (use-package web-mode
+	:ensure t
+	:config
+	       (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+	       (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
+	       (setq web-mode-engines-alist
+		     '(("django"    . "\\.html\\'")))
+	       (setq web-mode-ac-sources-alist
+	       '(("css" . (ac-source-css-property))
+	       ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
+	     ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+    (setq web-mode-enable-auto-closing t))
+    (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
+  #+end_src
+    
 * Lsp-mode
 #+begin_src emacs-lisp
   ;; lsp-mode
@@ -349,8 +369,10 @@
   (use-package prettier-js
     :ensure t)
   (add-hook 'web-mode-hook #'(lambda ()
-                               (enable-minor-mode
-                                '("\\.jsx?\\'" . prettier-js-mode))
+            (enable-minor-mode
+            '("\\.vue?\\'" . prettier-js-mode))
+            (enable-minor-mode
+            '("\\.jsx?\\'" . prettier-js-mode))
              (enable-minor-mode
                                 '("\\.tsx?\\'" . prettier-js-mode))))
 
@@ -527,26 +549,6 @@
   #+end_src
 
 
-* Web-mode
-  #+begin_src emacs-lisp
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-code-indent-offset 2)
-    (setq web-mode-css-indent-offset 2)
-      (use-package web-mode
-	:ensure t
-	:config
-	       (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-	       (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
-	       (setq web-mode-engines-alist
-		     '(("django"    . "\\.html\\'")))
-	       (setq web-mode-ac-sources-alist
-	       '(("css" . (ac-source-css-property))
-	       ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
-	     ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
-    (setq web-mode-enable-auto-closing t))
-    (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
-  #+end_src
-    
 * Javascript
   #+begin_src emacs-lisp
 (use-package js2-mode

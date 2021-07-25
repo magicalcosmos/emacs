@@ -65,8 +65,8 @@
 (message "Arrow keys are bad, you know?"))
         (use-package evil
           :init
-          (setq evil-want-integration t)
           (setq evil-want-keybinding nil)
+          (setq evil-want-integration t)
           (setq evil-want-C-u-scroll t)
           (setq evil-want-C-i-jump nil)
           (setq evil-respect-visual-line-mode t)
@@ -256,6 +256,23 @@
 
 (add-hook 'python-mode-hook 'my/python-mode-hook)
 
+(setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+    (use-package web-mode
+:ensure t
+:config
+	     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+	     (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
+	     (setq web-mode-engines-alist
+		   '(("django"    . "\\.html\\'")))
+	     (setq web-mode-ac-sources-alist
+	     '(("css" . (ac-source-css-property))
+	     ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
+	   ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+  (setq web-mode-enable-auto-closing t))
+  (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
+
 ;; lsp-mode
 (setq lsp-log-io nil) ;; Don't log everything = speed
 (setq lsp-keymap-prefix "C-c l")
@@ -267,14 +284,29 @@
 (use-package lsp-mode
   :ensure t
   :hook (
-	 (web-mode . lsp-deferred)
-	 (lsp-mode . lsp-enable-which-key-integration)
-	 )
-  :commands lsp-deferred)
+   (lsp-mode . lsp-enable-which-key-integration)
+   (go-mode . lsp-deferred)
+   (js-mode . lsp-deferred)
+   (web-mode . lsp-deferred)
+   (vue-mode . lsp-deferred)
+   (html-mode . lsp-deferred)
+   )
+  :commands (lsp lsp-deferred))
 
 
 (use-package lsp-ui
-  :ensure t
+  :after lsp-mode
+  :hook(lsp-mode . lsp-ui-mode)
+  :init(setq lsp-ui-doc-enable t
+             lsp-ui-doc-use-webkit nil
+             lsp-ui-doc-delay 0
+             lsp-ui-doc-include-signature t
+             lsp-ui-doc-position 'at-point
+             lsp-ui-sideline-enable t
+             lsp-ui-sideline-show-hover nil
+             lsp-ui-sideline-show-diagnostics nil
+             lsp-ui-sideline-ignore-duplicate t)
+  :config(setq lsp-ui-flycheck-enable t)
   :commands lsp-ui-mode)
 
 
@@ -282,14 +314,16 @@
   "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
   (if (buffer-file-name)
       (if (string-match (car my-pair) buffer-file-name)
-	  (funcall (cdr my-pair)))))
+    (funcall (cdr my-pair)))))
 
 (use-package prettier-js
   :ensure t)
 (add-hook 'web-mode-hook #'(lambda ()
-                             (enable-minor-mode
-                              '("\\.jsx?\\'" . prettier-js-mode))
-			     (enable-minor-mode
+          (enable-minor-mode
+          '("\\.vue?\\'" . prettier-js-mode))
+          (enable-minor-mode
+          '("\\.jsx?\\'" . prettier-js-mode))
+           (enable-minor-mode
                               '("\\.tsx?\\'" . prettier-js-mode))))
 
 (global-set-key (kbd "M-s e") 'iedit-mode)
@@ -439,23 +473,6 @@ all-the-icons-ivy-rich-display-transformers-list
   :ensure t
   :init
   (global-undo-tree-mode))
-
-(setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-    (use-package web-mode
-:ensure t
-:config
-	     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-	     (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
-	     (setq web-mode-engines-alist
-		   '(("django"    . "\\.html\\'")))
-	     (setq web-mode-ac-sources-alist
-	     '(("css" . (ac-source-css-property))
-	     ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
-	   ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
-  (setq web-mode-enable-auto-closing t))
-  (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
 
 (use-package js2-mode
 :ensure t
@@ -1149,8 +1166,9 @@ all-the-icons-ivy-rich-display-transformers-list
     :ensure t)
 ;; Different command can use different display function.
 (setq ivy-posframe-display-functions-alist
-      '((swiper          . ivy-posframe-display-at-point)
-        (complete-symbol . ivy-posframe-display-at-point)
-        (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
-        (t               . ivy-posframe-display)))
+      '((swiper          . ivy-posframe-display-at-window-center)
+        (complete-symbol . ivy-posframe-display-at-window-center)
+        (counsel-M-x     . ivy-posframe-display-at-window-center)
+        (counsel-find-file     . ivy-posframe-display-at-window-center)
+        (t               . ivy-posframe-display-at-window-center)))
 (ivy-posframe-mode 1)

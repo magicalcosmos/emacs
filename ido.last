@@ -23,6 +23,10 @@
 
 ;; ----- ido-dir-file-cache -----
 (
+ ("/Users/brodyliao/workspace/web/rocket-web/src/" (24828 45006 985061 100000) "router/" "store/" "vendor/" ".tern-port" "shims-vue.d.ts" "views/" "i18n/" "service/" "permission.ts" "api/" "pwa/" "icons/" "theme/" "components/" "styles/" "shims-tsx.d.ts" "utils/" "config.json" "main.ts" "interface/" "App.vue" "filters/" "directives/" "../" "./")
+
+ ("/Users/brodyliao/workspace/web/rocket-web/src/directives/" (24828 44949 678743 106000) "auth.ts" ".tern-port" "index.ts" "hide.ts" "../" "./")
+
  ("/Users/brodyliao/workspace/web/rocket-web/src/utils/" (24828 39987 918661 874000) "testCase.bak.js" "auth.ts" "hash.js" "utils.js" "log.ts" "report.js" "redefined.js" "uuid.js" "d3ContextMenu.js" "popper.ts" "treeTableEval.js" "request.ts" "drag.ts" "variable.ts" "utils_test.js" "testCase.js" "index.js" "common.ts" "time.js" "dict.ts" "ajax.ts" "localStorage.ts" "request.js" "sha256.js" "testCaseForReport.js" "websocket.ts" "../" "./")
 
  ("/Users/brodyliao/workspace/web/rocket-web/src/views/" (24828 39987 918909 862000) "NotFound.vue" "Redirect.vue" "tester/" "ChangePassword.vue" "InvalidLicense.vue" "worker.vue.demo" "Login.vue" "VersionInfo.vue" "TestComponents.vue" "systemManagement/" "../" "./")
@@ -32,8 +36,6 @@
  ("/Users/brodyliao/workspace/web/rocket-web/src/api/" (24828 39987 880221 366000) "builder.js" "userInformation.ts" "api.js" "index.ts" "tester/" "authorization.ts" "urls.ts" "systemManagement/" "../" "./")
 
  ("/Users/brodyliao/workspace/web/amqp/" (23792 38627 975938 990000) "mq.js" "package.json" "package-lock.json" "node_modules/" "../" "./")
-
- ("/Users/brodyliao/workspace/web/rocket-web/src/" (24828 39987 902456 857000) "router/" "store/" "vendor/" "shims-vue.d.ts" "views/" "i18n/" "service/" "permission.ts" "api/" "pwa/" "icons/" "theme/" "components/" "styles/" "shims-tsx.d.ts" "utils/" "config.json" "main.ts" "interface/" "App.vue" "filters/" "directives/" "../" "./")
 
  ("/Users/brodyliao/" (24828 40949 463843 831000) ".composer/" ".3T/" "GolandProjects/" ".idapro/" "jiusi/" ".zsh_sessions/" ".viminfo" ".bash_history" ".mongorc.js" ".putty/" ".zcompdump-Brody的MacBook Pro (2)-5.7.1" ".gitconfig" ".cache/" "tmp/" ".python_history" "Downloads/" ".oh-my-zsh/" ".v8flags.6.2.414.46-node.15.883a4f9af7bef3e2f57bf934cd652878.json" ".vim_runtime/" ".pm2/" "backup" ".bzr.log" ".bash_profile" ".spacemacs" ".vscode/" ".emacs.d.space/" ".mono/" "Sunlogin Files/" ".mysql_history" ".zcompdump-Brody的MacBook Pro (2)-5.8" "Sync/" ".babel.json" ".spacemacs.env" "Documents/" ".npm/" ".nrmrc" ".Trash/" ".vimrc-bak" ".emacs.d.bak/" ".dbshell" "Applications/" "Movies/" "Applications (Parallels)/" ".vim_mru_files" ".ssh/" ".dbeaver-drivers/" ".thinkvim.d/" ".gopm/" ".flutter" ".env" "Public/" "golang_project/" "flutter/" ".bash_sessions/" ".cups/" "webtemplate/" ".pgadmin/" ".pgAdmin4.startup.log" ".dlv/" ".android/" ".npminstall_tarball/" ".node_repl_history" ".LfCache/" ".lanternsecrets/" ".emacs.d/" "elk/" "Parallels/" ".oracle_jre_usage/" ".electron/" "rocket_backup" ".npmrc" "eclipse-workspace/" "Library/" "Desktop/" ".p2/" ".zsh_history" "index.js" "mini-program/" ".flutter_tool_state" "nodePipe1824.sock" "Postman/" ".dartServer/" "vimrcs" "lab/" ".zprofile" ".atom/" "workspace/" "understand/" "Pictures/" "Creative Cloud Files/" ".local/" ".vue-templates/" "bak/" ".zshrc" "golang-lab/" ".zshrc.pre-oh-my-zsh" ".subversion/" "python/" ".wget-hsts" ".CFUserTextEncoding" ".yarnrc" ".v8flags.6.8.275.32-node.36.883a4f9af7bef3e2f57bf934cd652878.json" "emac.d.bak/" ".zshrc~" "eclipse/" ".vuerc" ".DS_Store" "go/" ".bash_profile.macports-saved_2018-02-13_at_14:56:09" "index.html" "dumps/" ".dart/" ".vim/" ".virtualenvs/" ".node-gyp/" ".bash_profil" "sensors/" "Music/" ".config/" ".eclipse/" "vim/" "v8/" ".xournalpp/" ".v8flags.6.8.275.32-node.51.883a4f9af7bef3e2f57bf934cd652878.json" ".dbeaver4/" "../" "./")
 
