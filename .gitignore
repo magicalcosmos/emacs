@@ -7,3 +7,8 @@ recentf
 ac-comphist.dat
 tern*
 **/*/tern*
+.extension
+emms
+eshell
+games
+my-init.el
