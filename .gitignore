@@ -12,3 +12,5 @@ emms
 eshell
 games
 my-init.el
+.lsp-session-v1
+transient/
