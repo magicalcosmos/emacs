@@ -1410,13 +1410,13 @@ These templates enable you to type things like <el and then hit Tab to expand th
 
 * Toggle Eshell
 #+begin_src emacs-lisp
-  (use-package eshell-toggle
-    :ensure t
-    :bind ("C-M-'" . eshell-toggle)
-    :custom
-    (eshell-toggle-size-fraction 3)
-    (eshell-toggle-use-projectile-root t)
-    (eshell-toggle-run-command nil))
+  ;;(use-package eshell-toggle
+  ;;  :ensure t
+  ;;  :bind ("C-M-'" . eshell-toggle)
+  ;;  :custom
+  ;;  (eshell-toggle-size-fraction 3)
+  ;;  (eshell-toggle-use-projectile-root t)
+  ;;  (eshell-toggle-run-command nil))
 
 #+end_src
 
@@ -1431,3 +1431,11 @@ These templates enable you to type things like <el and then hit Tab to expand th
 (require 'wgrep-ag)
 #+end_src
 
+
+* Better shell
+#+begin_src emacs-lisp
+(use-package better-shell
+    :ensure t
+    :bind (("C-\"" . better-shell-shell)
+           ("C-:" . better-shell-remote-open)))
+#+end_src
