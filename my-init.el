@@ -1218,10 +1218,11 @@
       (complete-symbol . ivy-posframe-display-at-window-center)
       (counsel-M-x     . ivy-posframe-display-at-window-center)
       (counsel-find-file     . ivy-posframe-display-at-window-center)
+      (fuzzy-finder-find-files-projectile     . ivy-posframe-display-at-window-center)
       (t               . ivy-posframe-display-at-window-center)))
   (ivy-posframe-mode 1)
-(setq ivy-posframe-height-alist '((swiper . 20)
-                                  (t      . 20)))
+(setq ivy-posframe-height-alist '((swiper . 15)
+                                  (t      . 15)))
 
 (use-package eshell-toggle
   :ensure t
