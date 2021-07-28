@@ -102,9 +102,6 @@
 
 (require 'org-tempo)
 
-(use-package try
-:ensure t)
-
 (use-package treemacs
   :ensure t
   :defer t
@@ -277,63 +274,60 @@
   (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
 
 ;; lsp-mode
-(setq lsp-log-io nil) ;; Don't log everything = speed
-(setq lsp-keymap-prefix "C-c l")
-(setq lsp-restart 'auto-restart)
-(setq lsp-ui-sideline-show-diagnostics t)
-(setq lsp-ui-sideline-show-hover t)
-(setq lsp-ui-sideline-show-code-actions t)
+  (setq lsp-log-io nil) ;; Don't log everything = speed
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-restart 'auto-restart)
+  (setq lsp-ui-sideline-show-diagnostics t)
+  (setq lsp-ui-sideline-show-hover t)
+  (setq lsp-ui-sideline-show-code-actions t)
 
-(use-package lsp-mode
-  :ensure t
-  :hook (
-   (lsp-mode . lsp-enable-which-key-integration)
-   (go-mode . lsp-deferred)
-   (js-mode . lsp-deferred)
-   (web-mode . lsp-deferred)
-   (vue-mode . lsp-deferred)
-   (html-mode . lsp-deferred)
-   )
-  :commands (lsp lsp-deferred))
-
-
-(use-package lsp-ui
-  :after lsp-mode
-  :hook(lsp-mode . lsp-ui-mode)
-  :init(setq lsp-ui-doc-enable t
-             lsp-ui-doc-use-webkit nil
-             lsp-ui-doc-delay 0
-             lsp-ui-doc-include-signature t
-             lsp-ui-doc-position 'at-point
-             lsp-ui-sideline-enable t
-             lsp-ui-sideline-show-hover nil
-             lsp-ui-sideline-show-diagnostics nil
-             lsp-ui-sideline-ignore-duplicate t)
-  :config(setq lsp-ui-flycheck-enable t)
-  :commands lsp-ui-mode)
+  (use-package lsp-mode
+    :ensure t
+    :hook (
+     (go-mode . lsp-deferred)
+     (js-mode . lsp-deferred)
+     (json-mode . lsp-deferred)
+     (web-mode . lsp-deferred)
+     (vue-mode . lsp-deferred)
+     (html-mode . lsp-deferred)
+     (lsp-mode . lsp-enable-which-key-integration)
+     )
+    :commands (lsp lsp-deferred))
 
 
-(defun enable-minor-mode (my-pair)
-  "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
-  (if (buffer-file-name)
-      (if (string-match (car my-pair) buffer-file-name)
-    (funcall (cdr my-pair)))))
+  (use-package lsp-ui
+    :after lsp-mode
+    :hook(lsp-mode . lsp-ui-mode)
+    :init(setq lsp-ui-doc-enable t
+               lsp-ui-doc-use-webkit nil
+               lsp-ui-doc-delay 0
+               lsp-ui-doc-include-signature t
+               lsp-ui-doc-position 'at-point
+               lsp-ui-sideline-enable t
+               lsp-ui-sideline-show-hover nil
+               lsp-ui-sideline-show-diagnostics nil
+               lsp-ui-sideline-ignore-duplicate t)
+    :config(setq lsp-ui-flycheck-enable t)
+    :commands lsp-ui-mode)
 
-(use-package prettier-js
-  :ensure t)
-(add-hook 'web-mode-hook #'(lambda ()
-          (enable-minor-mode
-          '("\\.vue?\\'" . prettier-js-mode))
-          (enable-minor-mode
-          '("\\.jsx?\\'" . prettier-js-mode))
-           (enable-minor-mode
-                              '("\\.tsx?\\'" . prettier-js-mode))))
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
-(global-set-key (kbd "M-s e") 'iedit-mode)
+  (defun enable-minor-mode (my-pair)
+    "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
+    (if (buffer-file-name)
+        (if (string-match (car my-pair) buffer-file-name)
+      (funcall (cdr my-pair)))))
 
-;; json-mode
-(use-package json-mode
-  :ensure t)
+  (use-package prettier-js
+    :ensure t)
+  (add-hook 'web-mode-hook #'(lambda ()
+            (enable-minor-mode
+            '("\\.vue?\\'" . prettier-js-mode))
+            (enable-minor-mode
+            '("\\.jsx?\\'" . prettier-js-mode))
+             (enable-minor-mode
+                                '("\\.tsx?\\'" . prettier-js-mode))))
 
 (use-package counsel-etags
       :ensure t
@@ -493,71 +487,6 @@
   :config
   (setq aya-persist-snippets-dir (concat user-emacs-directory "snippets")))
 
-(use-package js2-mode
-:ensure t
-:ensure ac-js2
-:init
-(progn
-(add-hook 'js-mode-hook 'js2-minor-mode)
-(add-hook 'js2-mode-hook 'ac-js2-mode)
-))
-
-(use-package js2-refactor
-:ensure t
-:config 
-(progn
-(js2r-add-keybindings-with-prefix "C-c C-m")
-;; eg. extract function with `C-c C-m ef`.
-(add-hook 'js2-mode-hook #'js2-refactor-mode)))
-(use-package tern
-:ensure tern
-:ensure tern-auto-complete
-:config
-(progn
-(add-hook 'js-mode-hook (lambda () (tern-mode t)))
-(add-hook 'js2-mode-hook (lambda () (tern-mode t)))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-(add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
-;;(tern-ac-setup)
-))
-
-;;(use-package jade
-;;:ensure t
-;;)
-
-;; use web-mode for .jsx files
-(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tsx$" . web-mode))
-
-
-;; turn on flychecking globally
-(add-hook 'after-init-hook #'global-flycheck-mode)
-
-;; disable jshint since we prefer eslint checking
-(setq-default flycheck-disabled-checkers
-  (append flycheck-disabled-checkers
-    '(javascript-jshint)))
-
-;; use eslint with web-mode for jsx files
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-
-;; customize flycheck temp file prefix
-(setq-default flycheck-temp-prefix ".flycheck")
-
-;; disable json-jsonlist checking for json files
-(setq-default flycheck-disabled-checkers
-  (append flycheck-disabled-checkers
-    '(json-jsonlist)))
-
-;; adjust indents for web-mode to 2 spaces
-(defun my-web-mode-hook ()
-  "Hooks for Web mode. Adjust indents"
-  ;;; http://web-mode.org/
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-code-indent-offset 2))
-(add-hook 'web-mode-hook  'my-web-mode-hook)
-
 (use-package all-the-icons-dired)
 (use-package dired-rainbow
   :defer 2
@@ -664,6 +593,107 @@
 :config
 (exec-path-from-shell-initialize)
 )
+
+(use-package js2-mode
+:ensure t
+:ensure ac-js2
+:init
+(progn
+(add-hook 'js-mode-hook 'js2-minor-mode)
+(add-hook 'js2-mode-hook 'ac-js2-mode)
+))
+
+(use-package js2-refactor
+:ensure t
+:config 
+(progn
+(js2r-add-keybindings-with-prefix "C-c C-m")
+;; eg. extract function with `C-c C-m ef`.
+(add-hook 'js2-mode-hook #'js2-refactor-mode)))
+(use-package tern
+:ensure tern
+:ensure tern-auto-complete
+:config
+(progn
+(add-hook 'js-mode-hook (lambda () (tern-mode t)))
+(add-hook 'js2-mode-hook (lambda () (tern-mode t)))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
+;;(tern-ac-setup)
+))
+
+;;(use-package jade
+;;:ensure t
+;;)
+
+;; use web-mode for .jsx files
+(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx$" . web-mode))
+
+
+;; turn on flychecking globally
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+;; disable jshint since we prefer eslint checking
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(javascript-jshint)))
+
+;; use eslint with web-mode for jsx files
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+
+;; customize flycheck temp file prefix
+(setq-default flycheck-temp-prefix ".flycheck")
+
+;; disable json-jsonlist checking for json files
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(json-jsonlist)))
+
+;; adjust indents for web-mode to 2 spaces
+(defun my-web-mode-hook ()
+  "Hooks for Web mode. Adjust indents"
+  ;;; http://web-mode.org/
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2))
+(add-hook 'web-mode-hook  'my-web-mode-hook)
+
+(use-package nvm
+  :defer t)
+(use-package typescript-mode
+  :ensure
+  :mode "\\.ts\\'"
+  :config
+  (setq typescript-indent-level 2))
+
+(defun bl/set-js-indentation ()
+  (setq js-indent-level 2)
+  (setq evil-shift-width js-indent-level)
+  (setq-default tab-width 2))
+
+(use-package js2-mode
+  :ensure t
+  :mode "\\.(j|t)sx?\\'"
+  :config
+  ;; Use js2-mode for Node scripts
+  (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
+
+  ;; Don't use built-in syntax checking
+  (setq js2-mode-show-strict-warnings nil)
+
+  ;; Set up proper indentation in JavaScript and JSON files
+  (add-hook 'js2-mode-hook #'bl/set-js-indentation)
+  (add-hook 'json-mode-hook #'bl/set-js-indentation))
+
+
+
+(use-package prettier-js
+  :ensure t
+  ;; :hook ((js2-mode . prettier-js-mode)
+  ;;        (typescript-mode . prettier-js-mode))
+  :config
+  (setq prettier-js-show-errors nil))
 
 (use-package deadgrep 
 :ensure t)
@@ -785,28 +815,6 @@
 
     (use-package htmlize :ensure t)
 
-(define-prefix-command 'z-map)
-(global-set-key (kbd "C-z") 'z-map) ;; was C-1
-(define-key z-map (kbd "k") 'compile)
-(define-key z-map (kbd "c") 'hydra-multiple-cursors/body)
-(define-key z-map (kbd "m") 'mu4e)
-(define-key z-map (kbd "1") 'org-global-cycle)
-(define-key z-map (kbd "a") 'org-agenda-show-agenda-and-todo)
-(define-key z-map (kbd "g") 'counsel-ag)
-(define-key z-map (kbd "2") 'make-frame-command)
-(define-key z-map (kbd "0") 'delete-frame)
-(define-key z-map (kbd "o") 'ace-window)
-
-(define-key z-map (kbd "s") 'flyspell-correct-word-before-point)
-(define-key z-map (kbd "i") 'z/load-iorg)
-(define-key z-map (kbd "f") 'origami-toggle-node)
-(define-key z-map (kbd "w") 'z/swap-windows)
-(define-key z-map (kbd "*") 'calc)
-
-(use-package emojify
-  :hook (erc-mode . emojify-mode)
-  :commands emojify-mode)
-
 (use-package alert
   :commands alert
   :config
@@ -816,19 +824,6 @@
   :config
   (set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
   (show-paren-mode 1))
-
-(use-package evil-nerd-commenter
-  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
-
-(use-package avy
-  :ensure t
-  :commands (avy-goto-char avy-goto-word-0 avy-goto-line))
-
-(bl/leader-key-def
-  "j"   '(:ignore t :which-key "jump")
-  "jj"  '(avy-goto-char :which-key "jump to char")
-  "jw"  '(avy-goto-word-0 :which-key "jump to word")
-  "jl"  '(avy-goto-line :which-key "jump to line"))
 
 (use-package default-text-scale
   :ensure t
@@ -845,14 +840,6 @@
   (aw-minibuffer-flag t)
   :config
   (ace-window-display-mode 1))
-
-(use-package winner
-  :ensure
-  :after evil
-  :config
-  (winner-mode)
-  (define-key evil-window-map "u" 'winner-undo)
-  (define-key evil-window-map "U" 'winner-redo))
 
 (defun bl/org-mode-visual-fill ()
   (setq visual-fill-column-width 110
@@ -978,42 +965,6 @@
   (dap-tooltip-mode 1)
   (require 'dap-node)
   (dap-node-setup))
-
-(use-package nvm
-  :defer t)
-(use-package typescript-mode
-  :ensure
-  :mode "\\.ts\\'"
-  :config
-  (setq typescript-indent-level 2))
-
-(defun bl/set-js-indentation ()
-  (setq js-indent-level 2)
-  (setq evil-shift-width js-indent-level)
-  (setq-default tab-width 2))
-
-(use-package js2-mode
-  :ensure t
-  :mode "\\.(j|t)sx?\\'"
-  :config
-  ;; Use js2-mode for Node scripts
-  (add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
-
-  ;; Don't use built-in syntax checking
-  (setq js2-mode-show-strict-warnings nil)
-
-  ;; Set up proper indentation in JavaScript and JSON files
-  (add-hook 'js2-mode-hook #'bl/set-js-indentation)
-  (add-hook 'json-mode-hook #'bl/set-js-indentation))
-
-
-
-(use-package prettier-js
-  :ensure t
-  ;; :hook ((js2-mode . prettier-js-mode)
-  ;;        (typescript-mode . prettier-js-mode))
-  :config
-  (setq prettier-js-show-errors nil))
 
 (use-package go-mode
   :ensure t
@@ -1224,13 +1175,13 @@
 (setq ivy-posframe-height-alist '((swiper . 15)
                                   (t      . 15)))
 
-(use-package eshell-toggle
-  :ensure t
-  :bind ("C-M-'" . eshell-toggle)
-  :custom
-  (eshell-toggle-size-fraction 3)
-  (eshell-toggle-use-projectile-root t)
-  (eshell-toggle-run-command nil))
+;;(use-package eshell-toggle
+;;  :ensure t
+;;  :bind ("C-M-'" . eshell-toggle)
+;;  :custom
+;;  (eshell-toggle-size-fraction 3)
+;;  (eshell-toggle-use-projectile-root t)
+;;  (eshell-toggle-run-command nil))
 
 (use-package wgrep
 :ensure t
@@ -1239,3 +1190,12 @@
 :ensure t
 )
 (require 'wgrep-ag)
+
+(use-package better-shell
+    :ensure t
+    :bind (("C-\"" . better-shell-shell)
+           ("C-:" . better-shell-remote-open)))
+
+;; global key-binding settings for comment (jetbrains style)
+(global-set-key (kbd "C-/") 'comment-line)
+(global-set-key (kbd "C-?") 'comment-or-uncomment-region) ; Acturally this is conflict with emacs quirks
