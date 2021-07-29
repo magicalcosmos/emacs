@@ -1369,3 +1369,11 @@ These templates enable you to type things like <el and then hit Tab to expand th
   (global-set-key (kbd "C-/") 'comment-line)
   (global-set-key (kbd "C-?") 'comment-or-uncomment-region) ; Acturally this is conflict with emacs quirks
 #+end_src
+
+* Dashboard
+#+begin_src emacs-lisp
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+#+end_src

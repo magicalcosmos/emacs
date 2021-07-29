@@ -446,6 +446,9 @@
       ("C-r" . swiper-isearch)
       ("C-c C-r" . ivy-resume)
       ("C-c f" . counsel-recentf)
+      ("C-c g" . counsel-git)
+      ("C-c j" . counsel-git-grep)
+      ("C-c k" . counsel-ag)
       ("M-x" . counsel-M-x)
       ("C-x C-f" . counsel-find-file))
     :config
@@ -1066,6 +1069,13 @@
     "gp"  'magit-pull-branch
     "gf"  'magit-fetch
     "gF"  'magit-fetch-all
+    "gm"   '(:ignore t :which-key "merge")
+    "gmm"  'magit-merge
+    "gme"  'magit-merge-editmsg
+    "gmn"  'magit-merge-nocommit
+    "gmi"  'magit-merge-into
+    "gms"  'magit-merge-squash
+    "gmp"  'magit-merge-preview
     "gr"  'magit-rebase)
     (use-package forge
   :disabled)
@@ -1175,14 +1185,6 @@
 (setq ivy-posframe-height-alist '((swiper . 15)
                                   (t      . 15)))
 
-;;(use-package eshell-toggle
-;;  :ensure t
-;;  :bind ("C-M-'" . eshell-toggle)
-;;  :custom
-;;  (eshell-toggle-size-fraction 3)
-;;  (eshell-toggle-use-projectile-root t)
-;;  (eshell-toggle-run-command nil))
-
 (use-package wgrep
 :ensure t
 )
@@ -1199,3 +1201,8 @@
 ;; global key-binding settings for comment (jetbrains style)
 (global-set-key (kbd "C-/") 'comment-line)
 (global-set-key (kbd "C-?") 'comment-or-uncomment-region) ; Acturally this is conflict with emacs quirks
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
