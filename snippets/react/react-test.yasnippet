@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: react-test
+# key: rtest
+# --
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import '~@/i18n';
+import Header from './index';
+test('renders '\${0}'component', () => {
+  render(<Router><Header /></Router>);
+  let menuItem = screen.getByText(/????/i);
+  expect(menuItem).toBeInTheDocument();
+});

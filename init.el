@@ -145,3 +145,4 @@
 (setq-default evil-shift-width tab-width)
 ;; Use spaces instead of tabs for indentation
 (setq-default indent-tabs-mode nil)
+(auto-revert-mode t)
