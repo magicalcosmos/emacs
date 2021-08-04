@@ -32,6 +32,10 @@
 (setq inhibit-startup-message nil)
 (setq initial-buffer-choice  nil)
 (setq inhibit-compacting-font-caches t)
+
+;; remove cl warning
+(setq byte-compile-warnings '(cl-functions))
+
 ;; Disable visible scrollbar
 (scroll-bar-mode -1)
 

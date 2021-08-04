@@ -758,29 +758,8 @@
               (alltodo "")))))
 
     (global-set-key (kbd "C-c c") 'org-capture)
-
-    (setq org-agenda-files (list "~/Sync/orgfiles/gcal.org"
-                                 "~/Sync/orgfiles/soe-cal.org"
-                                 "~/Sync/orgfiles/i.org"
-                                 "~/Sync/orgfiles/schedule.org"))
-    (setq org-capture-templates
-          '(("a" "Appointment" entry (file  "~/Sync/orgfiles/gcal.org" )
-             "* %?\n\n%^T\n\n:PROPERTIES:\n\n:END:\n\n")
-            ("l" "Link" entry (file+headline "~/Sync/orgfiles/links.org" "Links")
-             "* %? %^L %^g \n%T" :prepend t)
-            ("b" "Blog idea" entry (file+headline "~/Sync/orgfiles/i.org" "Blog Topics:")
-             "* %?\n%T" :prepend t)
-            ("t" "To Do Item" entry (file+headline "~/Sync/orgfiles/i.org" "To Do and Notes")
-             "* TODO %?\n%u" :prepend t)
-            ("m" "Mail To Do" entry (file+headline "~/Sync/orgfiles/i.org" "To Do and Notes")
-             "* TODO %a\n %?" :prepend t)
-            ("g" "GMail To Do" entry (file+headline "~/Sync/orgfiles/i.org" "To Do and Notes")
-             "* TODO %^L\n %?" :prepend t)
-            ("n" "Note" entry (file+headline "~/Sync/orgfiles/i.org" "Notes")
-             "* %u %? " :prepend t)
-            ))
   
-
+    (setq org-agenda-files '("~/Sync/orgfiles"))
     (defadvice org-capture-finalize 
         (after delete-capture-frame activate)  
       "Advise capture-finalize to close the frame"  
@@ -1373,22 +1352,36 @@ These templates enable you to type things like <el and then hit Tab to expand th
 
 * Dashboard
 #+begin_src emacs-lisp
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
+                  (use-package dashboard
+                    :ensure t
+                    :config
+                    (dashboard-setup-startup-hook))
 
-  (setq dashboard-items '((recents  . 5)
-                          (bookmarks . 5)
-                          (projects . 5)
-                          (agenda . 5)
-                          (registers . 5)))
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-  (setq dashboard-set-init-info t)
-  (setq dashboard-startup-banner "~/.emacs.d/emacs-logo.png")
-  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
-  (setq dashboard-week-agenda t)
-  ;;(setq dashboard-filter-agenda-entry dashboard-no-filter-agenda)
-  (setq dashboard-match-agenda-entry "org-gcal")
+                  (setq dashboard-items '(
+                                          ;;(recents  . 5)
+                                          ;;(bookmarks . 5)
+                                          (agenda . 5)
+                                          (projects . 5)
+                                          ;;(registers . 5)
+                                          ))
+                  (setq dashboard-set-heading-icons t)
+                  (setq dashboard-set-file-icons t)
+                  (setq dashboard-set-init-info t)
+                  ;;(setq dashboard-startup-banner "~/.emacs.d/emacs-logo.png")
+                  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+                  (setq dashboard-week-agenda t)
+                  ;;(setq dashboard-filter-agenda-entry dashboard-no-filter-agenda)
+                  ;;(setq dashboard-match-agenda-entry "~/Sync/orgfiles";; Content is not centered by default. To center, set
+                  (setq dashboard-center-content t)
+                  ;; To disable shortcut "jump" indicators for each section, set
+                  (setq dashboard-show-shortcuts nil)
+                (dashboard-modify-heading-icons '((recents . "file-text")
+                                                  (bookmarks . "book")))
+              (setq dashboard-set-navigator t)
+            (setq dashboard-set-footer nil)
+          (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+        (setq dashboard-org-agenda-categories '("Tasks" "Appointments"))
+      (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+
+
 #+end_src
