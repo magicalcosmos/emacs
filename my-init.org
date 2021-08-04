@@ -1270,14 +1270,6 @@ These templates enable you to type things like <el and then hit Tab to expand th
   (global-set-key (kbd "C-?") 'comment-or-uncomment-region) ; Acturally this is conflict with emacs quirks
 #+end_src
 
-* Dashboard
-#+begin_src emacs-lisp
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
-#+end_src
-
 * Treemacs
   #+begin_src emacs-lisp
 (use-package treemacs
@@ -1378,3 +1370,25 @@ These templates enable you to type things like <el and then hit Tab to expand th
   :config (treemacs-set-scope-type 'Perspectives))
   #+end_src
  
+
+* Dashboard
+#+begin_src emacs-lisp
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+
+  (setq dashboard-items '((recents  . 5)
+                          (bookmarks . 5)
+                          (projects . 5)
+                          (agenda . 5)
+                          (registers . 5)))
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-init-info t)
+  (setq dashboard-startup-banner "~/.emacs.d/emacs-logo.png")
+  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+  (setq dashboard-week-agenda t)
+  ;;(setq dashboard-filter-agenda-entry dashboard-no-filter-agenda)
+  (setq dashboard-match-agenda-entry "org-gcal")
+#+end_src

@@ -1105,11 +1105,6 @@
 (global-set-key (kbd "C-/") 'comment-line)
 (global-set-key (kbd "C-?") 'comment-or-uncomment-region) ; Acturally this is conflict with emacs quirks
 
-(use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook))
-
 (use-package treemacs
   :ensure t
   :defer t
@@ -1206,3 +1201,22 @@
   :after (treemacs persp-mode) ;;or perspective vs. persp-mode
   :ensure t
   :config (treemacs-set-scope-type 'Perspectives))
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+
+  (setq dashboard-items '((recents  . 5)
+                          (bookmarks . 5)
+                          (projects . 5)
+                          (agenda . 5)
+                          (registers . 5)))
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-init-info t)
+  (setq dashboard-startup-banner "~/.emacs.d/emacs-logo.png")
+  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+  (setq dashboard-week-agenda t)
+  ;;(setq dashboard-filter-agenda-entry dashboard-no-filter-agenda)
+  (setq dashboard-match-agenda-entry "org-gcal")

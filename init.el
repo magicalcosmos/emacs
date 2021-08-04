@@ -1,3 +1,7 @@
+;;;
+;;;  Created by Brody Liao
+;;;
+
 ;; Speed up startup
 (setq auto-mode-case-fold nil)
 
@@ -25,8 +29,8 @@
 
 (setq package-enable-at-startup nil)
 
-
-(setq inhibit-startup-message t)
+(setq inhibit-startup-message nil)
+(setq initial-buffer-choice  nil)
 (setq inhibit-compacting-font-caches t)
 ;; Disable visible scrollbar
 (scroll-bar-mode -1)
