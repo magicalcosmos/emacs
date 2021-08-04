@@ -16,3 +16,4 @@ my-init.el
 transient/
 .dap*
 **/*/.dap*
+eaf
