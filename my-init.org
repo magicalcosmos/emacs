@@ -596,6 +596,7 @@
 (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
 ;;(tern-ac-setup)
 ))
 
@@ -1067,7 +1068,7 @@ These templates enable you to type things like <el and then hit Tab to expand th
     (emms-mode-line-disable)
     (setq emms-source-file-default-directory "~/Music"))
     (bl/leader-key-def
-      "a"  '(:ignore t :which-key "media")
+      "a"  '(:ignore t :which-key "media and ag search")
       "ap" '(emms-pause :which-key "play / pause")
       "af" '(emms-play-file :which-key "play file"))
 #+end_src
@@ -1411,4 +1412,21 @@ These templates enable you to type things like <el and then hit Tab to expand th
 #+begin_src emacs-lisp
 (use-package company-tabnine :ensure t)
 (add-to-list 'company-backends #'company-tabnine)
+#+end_src
+
+* Ag
+#+begin_src emacs-lisp
+(use-package ag
+:ensure t)
+(setq ag-highlight-search t)
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match that used by the user's shell.
+
+This is particularly useful under Mac OSX, where GUI apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
 #+end_src

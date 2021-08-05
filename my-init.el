@@ -927,7 +927,7 @@
   (emms-mode-line-disable)
   (setq emms-source-file-default-directory "~/Music"))
   (bl/leader-key-def
-    "a"  '(:ignore t :which-key "media")
+    "a"  '(:ignore t :which-key "media and ag search")
     "ap" '(emms-pause :which-key "play / pause")
     "af" '(emms-play-file :which-key "play file"))
 
@@ -1228,3 +1228,20 @@
   (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
   (eaf-bind-key take_photo "p" eaf-camera-keybinding)
   (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
+
+(use-package company-tabnine :ensure t)
+(add-to-list 'company-backends #'company-tabnine)
+
+(use-package ag
+:ensure t)
+(setq ag-highlight-search t)
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match that used by the user's shell.
+
+This is particularly useful under Mac OSX, where GUI apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string "[ \t\n]*$" "" (shell-command-to-string "$SHELL --login -i -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
