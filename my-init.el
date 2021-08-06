@@ -65,6 +65,7 @@
 (message "Arrow keys are bad, you know?"))
         (use-package evil
           :init
+          (setq evil-want-fine-undo t)
           (setq evil-want-keybinding nil)
           (setq evil-want-integration t)
           (setq evil-want-C-u-scroll t)
@@ -524,6 +525,7 @@
 (add-hook 'js-mode-hook (lambda () (tern-mode t)))
 (add-hook 'js2-mode-hook (lambda () (tern-mode t)))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
 ;;(tern-ac-setup)
 ))
