@@ -35,7 +35,6 @@
 
 ;; remove cl warning
 (setq byte-compile-warnings '(cl-functions))
-
 ;; Disable visible scrollbar
 (scroll-bar-mode -1)
 
