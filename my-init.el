@@ -94,12 +94,6 @@
 
           (evil-set-initial-state 'messages-buffer-mode 'normal)
           (evil-set-initial-state 'dashboard-mode 'normal))
-    (use-package evil-collection
-      :after evil
-      :custom
-      (evil-collection-outline-bind-tab-p nil)
-      :config
-      (evil-collection-init))
 
 (require 'org-tempo)
 
@@ -427,14 +421,6 @@
   (use-package dired-collapse
     :defer t)
 
-  (evil-collection-define-key 'normal 'dired-mode-map
-    "h" 'dired-single-up-directory
-    "H" 'dired-omit-mode
-    "l" 'dired-single-buffer
-    "y" 'dired-ranger-copy
-    "X" 'dired-ranger-move
-    "p" 'dired-ranger-paste)
-
 (global-set-key (kbd "C-x C-b") 'ibuffer)
     (setq ibuffer-saved-filter-groups
           (quote (("default"
@@ -527,9 +513,10 @@
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . js2-mode))
-;;(tern-ac-setup)
+(tern-ac-setup)
 ))
 
+(setq tern-command (append tern-command '("--no-port-file")))
 ;;(use-package jade
 ;;:ensure t
 ;;)
@@ -1261,3 +1248,16 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
   (ivy-posframe-mode 1)
 (setq ivy-posframe-height-alist '((swiper . 10)
                                   (t      . 10)))
+
+(use-package dumb-jump
+     :ensure t)
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+(defhydra dumb-jump-hydra (:color blue :columns 3)
+    "Dumb Jump"
+    ("j" dumb-jump-go "Go")
+    ("o" dumb-jump-go-other-window "Other window")
+    ("e" dumb-jump-go-prefer-external "Go external")
+    ("x" dumb-jump-go-prefer-external-other-window "Go external other window")
+    ("i" dumb-jump-go-prompt "Prompt")
+    ("l" dumb-jump-quick-look "Quick look")
+    ("b" dumb-jump-back "Back"))
