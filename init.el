@@ -27,6 +27,10 @@
             (setq gc-cons-threshold 800000
                   gc-cons-percentage 0.1)))
 
+
+(add-to-list 'load-path "~/.emacs.d/site-lisp/lisp")
+(require 'color-rg)
+
 (setq package-enable-at-startup nil)
 
 (setq inhibit-startup-message nil)

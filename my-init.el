@@ -346,6 +346,7 @@
     :bind (
       ("C-r" . swiper-isearch)
       ("C-c C-r" . ivy-resume)
+      ("C-c C-o" . ivy-occur)
       ("C-c f" . counsel-recentf)
       ("C-c g" . counsel-git)
       ("C-c j" . counsel-git-grep)
