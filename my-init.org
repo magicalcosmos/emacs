@@ -110,6 +110,8 @@
               (evil-set-initial-state 'messages-buffer-mode 'normal)
               (evil-set-initial-state 'dashboard-mode 'normal))
 
+(global-undo-tree-mode)
+(evil-set-undo-system 'undo-tree)
   #+end_src
 
 #+begin_src emacs-lisp
@@ -390,6 +392,7 @@
     :bind (
       ("C-r" . swiper-isearch)
       ("C-c C-r" . ivy-resume)
+      ("C-c C-o" . ivy-occur)
       ("C-c f" . counsel-recentf)
       ("C-c g" . counsel-git)
       ("C-c j" . counsel-git-grep)
@@ -414,6 +417,8 @@
 
 
   #+end_src
+
+  #+RESULTS:
 
   
 * Flycheck
@@ -1454,3 +1459,4 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
     ("l" dumb-jump-quick-look "Quick look")
     ("b" dumb-jump-back "Back"))
 #+end_src
+
