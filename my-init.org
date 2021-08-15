@@ -61,7 +61,10 @@
     (persp-mode)))
 #+end_src
 
-
+* Undo tree
+#+begin_src emacs-lisp
+(require 'undo-tree)
+#+end_src
 * Evil mode
   #+begin_src emacs-lisp
     (defun bl/evil-hook ()
@@ -109,13 +112,12 @@
 
               (evil-set-initial-state 'messages-buffer-mode 'normal)
               (evil-set-initial-state 'dashboard-mode 'normal))
-
-(global-undo-tree-mode)
-(evil-set-undo-system 'undo-tree)
+  (global-undo-tree-mode)
+  (evil-set-undo-system 'undo-tree)
   #+end_src
 
 #+begin_src emacs-lisp
-(require 'org-tempo)
+  (require 'org-tempo)
 #+end_src
 
 
