@@ -1,3 +1,4 @@
+
 #+STARTUP: overview
 #+STARTUP: indent
 
@@ -63,57 +64,66 @@
 
 * Undo tree
 #+begin_src emacs-lisp
-(require 'undo-tree)
+ ;; (require 'undo-tree)
+(use-package undo-tree
+  :ensure t
+  :config
+  (progn
+    (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t)
+    ))
 #+end_src
 * Evil mode
   #+begin_src emacs-lisp
-    (defun bl/evil-hook ()
-      (dolist (mode '(custom-mode
-                      eshell-mode
-                      git-rebase-mode
-                      erc-mode
-                      circe-server-mode
-                      circe-chat-mode
-                      circe-query-mode
-                      sauron-mode
-                      term-mode))
-      (add-to-list 'evil-emacs-state-modes mode)))
-    (defun bl/dont-arrow-me-bro ()
-    (interactive)
-    (message "Arrow keys are bad, you know?"))
-            (use-package evil
-              :init
-              (setq evil-want-fine-undo t)
-              (setq evil-want-keybinding nil)
-              (setq evil-want-integration t)
-              (setq evil-want-C-u-scroll t)
-              (setq evil-want-C-i-jump nil)
-              (setq evil-respect-visual-line-mode t)
-              :config
-              (add-hook 'evil-mode-hook 'bl/evil-hook)
-              (evil-mode 1)
-              (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-              (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+      (defun bl/evil-hook ()
+        (dolist (mode '(custom-mode
+                        eshell-mode
+                        git-rebase-mode
+                        erc-mode
+                        circe-server-mode
+                        circe-chat-mode
+                        circe-query-mode
+                        sauron-mode
+                        term-mode))
+        (add-to-list 'evil-emacs-state-modes mode)))
+      (defun bl/dont-arrow-me-bro ()
+      (interactive)
+      (message "Arrow keys are bad, you know?"))
+              (use-package evil
+                :init
+                (setq evil-want-fine-undo t)
+                (setq evil-shift-width 2)
+                (setq evil-want-keybinding nil)
+                (setq evil-want-integration t)
+                (setq evil-want-C-u-scroll t)
+                (setq evil-want-C-i-jump nil)
+                (setq evil-respect-visual-line-mode t)
+                :config
+                (add-hook 'evil-mode-hook 'bl/evil-hook)
+                (evil-mode 1)
+                (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+                (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
-              ;; Use visual line motions even outside of visual-line-mode buffers
-              (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-              (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+                ;; Use visual line motions even outside of visual-line-mode buffers
+                (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+                (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-              (unless bl/is-termux
-                ;; Disable arrow keys in normal and visual modes
-                (define-key evil-normal-state-map (kbd "<left>") 'bl/dont-arrow-me-bro)
-                (define-key evil-normal-state-map (kbd "<right>") 'bl/dont-arrow-me-bro)
-                (define-key evil-normal-state-map (kbd "<down>") 'bl/dont-arrow-me-bro)
-                (define-key evil-normal-state-map (kbd "<up>") 'bl/dont-arrow-me-bro)
-                (evil-global-set-key 'motion (kbd "<left>") 'bl/dont-arrow-me-bro)
-                (evil-global-set-key 'motion (kbd "<right>") 'bl/dont-arrow-me-bro)
-                (evil-global-set-key 'motion (kbd "<down>") 'bl/dont-arrow-me-bro)
-                (evil-global-set-key 'motion (kbd "<up>") 'bl/dont-arrow-me-bro))
+                (unless bl/is-termux
+                  ;; Disable arrow keys in normal and visual modes
+                  (define-key evil-normal-state-map (kbd "<left>") 'bl/dont-arrow-me-bro)
+                  (define-key evil-normal-state-map (kbd "<right>") 'bl/dont-arrow-me-bro)
+                  (define-key evil-normal-state-map (kbd "<down>") 'bl/dont-arrow-me-bro)
+                  (define-key evil-normal-state-map (kbd "<up>") 'bl/dont-arrow-me-bro)
+                  (evil-global-set-key 'motion (kbd "<left>") 'bl/dont-arrow-me-bro)
+                  (evil-global-set-key 'motion (kbd "<right>") 'bl/dont-arrow-me-bro)
+                  (evil-global-set-key 'motion (kbd "<down>") 'bl/dont-arrow-me-bro)
+                  (evil-global-set-key 'motion (kbd "<up>") 'bl/dont-arrow-me-bro))
 
-              (evil-set-initial-state 'messages-buffer-mode 'normal)
-              (evil-set-initial-state 'dashboard-mode 'normal))
-  (global-undo-tree-mode)
-  (evil-set-undo-system 'undo-tree)
+                (evil-set-initial-state 'messages-buffer-mode 'normal)
+                (evil-set-initial-state 'dashboard-mode 'normal))
+    (global-undo-tree-mode)
+    (evil-set-undo-system 'undo-tree)
   #+end_src
 
 #+begin_src emacs-lisp
@@ -197,22 +207,27 @@
 
 * Web-mode
   #+begin_src emacs-lisp
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-code-indent-offset 2)
-    (setq web-mode-css-indent-offset 2)
-      (use-package web-mode
-	:ensure t
-	:config
-	       (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-	       (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
-	       (setq web-mode-engines-alist
-		     '(("django"    . "\\.html\\'")))
-	       (setq web-mode-ac-sources-alist
-	       '(("css" . (ac-source-css-property))
-	       ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
-	     ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
-    (setq web-mode-enable-auto-closing t))
-    (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
+    (use-package web-mode
+    :ensure t
+    :custom
+    (web-mode-markup-indent-offset 2)
+    (web-mode-code-indent-offset 2)
+    (web-mode-css-indent-offset 2)
+    :config
+        (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+        (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
+        (setq web-mode-engines-alist
+        '(("django"    . "\\.html\\'")))
+        (setq web-mode-ac-sources-alist
+        '(("css" . (ac-source-css-property))
+        ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
+        ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+      (setq web-mode-enable-auto-closing t))
+      (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
+      (add-hook 'css-mode-hook
+          (lambda ()
+            (setq css-indent-offset 2)
+            ))
   #+end_src
     
 * Lsp-mode
@@ -526,13 +541,6 @@
 
         ;; Don't ask for confirmation to delete marked buffers
         (setq ibuffer-expert t)
-    (use-package emmet-mode
-    :ensure t
-    :config
-    (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-    (add-hook 'web-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-    (add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-    )
   #+end_src
 
 * PDF 
@@ -1387,22 +1395,22 @@ These templates enable you to type things like <el and then hit Tab to expand th
 * EAF
 下载地址：git clone --depth=1 -b master https://github.com/manateelazycat/emacs-application-framework.git ~/.emacs.d/site-lisp/emacs-application-framework/
 #+begin_src emacs-lisp
-(use-package eaf
-  :load-path "~/.emacs.d/site-lisp/emacs-application-framework" ; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
-  :init
-  (use-package epc :defer t :ensure t)
-  (use-package ctable :defer t :ensure t)
-  (use-package deferred :defer t :ensure t)
-  (use-package s :defer t :ensure t)
-  :custom
-  (eaf-browser-continue-where-left-off t)
-  (eaf-find-alternate-file-in-dired t)
-  :config
-  (setq eaf-browser-enable-adblocker t)
-  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key take_photo "p" eaf-camera-keybinding)
-  (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
+;;(use-package eaf
+;;  :load-path "~/.emacs.d/site-lisp/emacs-application-framework" ; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
+;;  :init
+;;  (use-package epc :defer t :ensure t)
+;;  (use-package ctable :defer t :ensure t)
+;;  (use-package deferred :defer t :ensure t)
+;;  (use-package s :defer t :ensure t)
+;;  :custom
+;;  (eaf-browser-continue-where-left-off t)
+;;  (eaf-find-alternate-file-in-dired t)
+;;  :config
+;;  (setq eaf-browser-enable-adblocker t)
+;;  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+;;  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+;;  (eaf-bind-key take_photo "p" eaf-camera-keybinding)
+;;  (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
 #+end_src
 
 * TABNINE
@@ -1430,19 +1438,19 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 * Ivy-posframe
 #+begin_src emacs-lisp
-    (use-package ivy-posframe
-      :ensure t)
-    ;; Different command can use different display function.
-    (setq ivy-posframe-display-functions-alist
-      '((swiper          . ivy-posframe-display-at-window-center)
-        (complete-symbol . ivy-posframe-display-at-window-center)
-        (counsel-M-x     . ivy-posframe-display-at-window-center)
-        (counsel-find-file     . ivy-posframe-display-at-window-center)
-        (fuzzy-finder-find-files-projectile     . ivy-posframe-display-at-window-center)
-        (t               . ivy-posframe-display-at-window-center)))
-    (ivy-posframe-mode 1)
-  (setq ivy-posframe-height-alist '((swiper . 10)
-                                    (t      . 10)))
+ ;;   (use-package ivy-posframe
+ ;;     :ensure t)
+ ;;   ;; Different command can use different display function.
+ ;;   (setq ivy-posframe-display-functions-alist
+ ;;     '((swiper          . ivy-posframe-display-at-window-center)
+ ;;       (complete-symbol . ivy-posframe-display-at-window-center)
+ ;;       (counsel-M-x     . ivy-posframe-display-at-window-center)
+ ;;       (counsel-find-file     . ivy-posframe-display-at-window-center)
+ ;;       (fuzzy-finder-find-files-projectile     . ivy-posframe-display-at-window-center)
+ ;;       (t               . ivy-posframe-display-at-window-center)))
+ ;;   (ivy-posframe-mode 1)
+ ;; (setq ivy-posframe-height-alist '((swiper . 10)
+ ;;                                   (t      . 10)))
 #+end_src
 
 
@@ -1462,3 +1470,16 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
     ("b" dumb-jump-back "Back"))
 #+end_src
 
+
+* Emmet-mode
+# enable method: M-x emmet-mode
+#+begin_src emacs-lisp
+  (use-package emmet-mode
+    :ensure t)
+  (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+  (add-hook 'html-mode-hook 'emmet-mode)
+  (add-hook 'css-mode-hook  'emmet-mode)
+
+  (add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces.
+  (setq emmet-move-cursor-between-quotes t) ;; default nil
+#+end_src

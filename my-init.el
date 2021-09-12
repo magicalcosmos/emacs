@@ -49,7 +49,15 @@
   (unless (equal persp-mode t)
     (persp-mode)))
 
-(require 'undo-tree)
+;; (require 'undo-tree)
+(use-package undo-tree
+  :ensure t
+  :config
+  (progn
+    (global-undo-tree-mode)
+    (setq undo-tree-visualizer-timestamps t)
+    (setq undo-tree-visualizer-diff t)
+    ))
 
 (defun bl/evil-hook ()
     (dolist (mode '(custom-mode
@@ -68,6 +76,7 @@
           (use-package evil
             :init
             (setq evil-want-fine-undo t)
+            (setq evil-shift-width 2)
             (setq evil-want-keybinding nil)
             (setq evil-want-integration t)
             (setq evil-want-C-u-scroll t)
@@ -158,22 +167,27 @@
 
 (add-hook 'python-mode-hook 'my/python-mode-hook)
 
-(setq web-mode-markup-indent-offset 2)
-(setq web-mode-code-indent-offset 2)
-(setq web-mode-css-indent-offset 2)
-  (use-package web-mode
-    :ensure t
-    :config
-	   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-	   (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
-	   (setq web-mode-engines-alist
-		 '(("django"    . "\\.html\\'")))
-	   (setq web-mode-ac-sources-alist
-	   '(("css" . (ac-source-css-property))
-	   ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
-	 ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
-(setq web-mode-enable-auto-closing t))
-(setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
+(use-package web-mode
+:ensure t
+:custom
+(web-mode-markup-indent-offset 2)
+(web-mode-code-indent-offset 2)
+(web-mode-css-indent-offset 2)
+:config
+    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
+    (setq web-mode-engines-alist
+    '(("django"    . "\\.html\\'")))
+    (setq web-mode-ac-sources-alist
+    '(("css" . (ac-source-css-property))
+    ("vue" . (ac-source-words-in-buffer ac-source-abbrev))
+    ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+  (setq web-mode-enable-auto-closing t))
+  (setq web-mode-enable-auto-quoting t) ; this fixes the quote problem I mentioned
+  (add-hook 'css-mode-hook
+      (lambda ()
+        (setq css-indent-offset 2)
+        ))
 
 ;; lsp-mode
   (setq lsp-log-io nil) ;; Don't log everything = speed
@@ -427,47 +441,40 @@
     :defer t)
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-    (setq ibuffer-saved-filter-groups
-          (quote (("default"
-                   ("dired" (mode . dired-mode))
-                   ("org" (name . "^.*org$"))
-                   ("magit" (mode . magit-mode))
-                   ("IRC" (or (mode . circe-channel-mode) (mode . circe-server-mode)))
-                   ("web" (or (mode . web-mode) (mode . js2-mode)))
-                   ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
-                   ("mu4e" (or
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("dired" (mode . dired-mode))
+               ("org" (name . "^.*org$"))
+               ("magit" (mode . magit-mode))
+               ("IRC" (or (mode . circe-channel-mode) (mode . circe-server-mode)))
+               ("web" (or (mode . web-mode) (mode . js2-mode)))
+               ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+               ("mu4e" (or
 
-                            (mode . mu4e-compose-mode)
-                            (name . "\*mu4e\*")
-                            ))
-                   ("programming" (or
-                                   (mode . clojure-mode)
-                                   (mode . clojurescript-mode)
-                                   (mode . python-mode)
-                                   (mode . c++-mode)))
-                   ("emacs" (or
-                             (name . "^\\*scratch\\*$")
-                             (name . "^\\*Messages\\*$")))
-                   ))))
-    (add-hook 'ibuffer-mode-hook
-              (lambda ()
-                (ibuffer-auto-mode 1)
-                (ibuffer-switch-to-saved-filter-groups "default")))
+                        (mode . mu4e-compose-mode)
+                        (name . "\*mu4e\*")
+                        ))
+               ("programming" (or
+                               (mode . clojure-mode)
+                               (mode . clojurescript-mode)
+                               (mode . python-mode)
+                               (mode . c++-mode)))
+               ("emacs" (or
+                         (name . "^\\*scratch\\*$")
+                         (name . "^\\*Messages\\*$")))
+               ))))
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-auto-mode 1)
+            (ibuffer-switch-to-saved-filter-groups "default")))
 
-    ;; don't show these
-                                            ;(add-to-list 'ibuffer-never-show-predicates "zowie")
-    ;; Don't show filter groups if there are no buffers in that group
-    (setq ibuffer-show-empty-filter-groups nil)
+;; don't show these
+                                        ;(add-to-list 'ibuffer-never-show-predicates "zowie")
+;; Don't show filter groups if there are no buffers in that group
+(setq ibuffer-show-empty-filter-groups nil)
 
-    ;; Don't ask for confirmation to delete marked buffers
-    (setq ibuffer-expert t)
-(use-package emmet-mode
-:ensure t
-:config
-(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'web-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
-(add-hook 'css-mode-hook  'emmet-mode) ;; enable Emmet's css abbreviation.
-)
+;; Don't ask for confirmation to delete marked buffers
+(setq ibuffer-expert t)
 
 (use-package pdf-tools
   :ensure t
@@ -1206,22 +1213,22 @@
   (setq dashboard-org-agenda-categories '("Tasks" "Appointments"))
 (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
 
-(use-package eaf
-  :load-path "~/.emacs.d/site-lisp/emacs-application-framework" ; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
-  :init
-  (use-package epc :defer t :ensure t)
-  (use-package ctable :defer t :ensure t)
-  (use-package deferred :defer t :ensure t)
-  (use-package s :defer t :ensure t)
-  :custom
-  (eaf-browser-continue-where-left-off t)
-  (eaf-find-alternate-file-in-dired t)
-  :config
-  (setq eaf-browser-enable-adblocker t)
-  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key take_photo "p" eaf-camera-keybinding)
-  (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
+;;(use-package eaf
+;;  :load-path "~/.emacs.d/site-lisp/emacs-application-framework" ; Set to "/usr/share/emacs/site-lisp/eaf" if installed from AUR
+;;  :init
+;;  (use-package epc :defer t :ensure t)
+;;  (use-package ctable :defer t :ensure t)
+;;  (use-package deferred :defer t :ensure t)
+;;  (use-package s :defer t :ensure t)
+;;  :custom
+;;  (eaf-browser-continue-where-left-off t)
+;;  (eaf-find-alternate-file-in-dired t)
+;;  :config
+;;  (setq eaf-browser-enable-adblocker t)
+;;  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+;;  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+;;  (eaf-bind-key take_photo "p" eaf-camera-keybinding)
+;;  (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
 
 (use-package company-tabnine :ensure t)
 (add-to-list 'company-backends #'company-tabnine)
@@ -1240,19 +1247,19 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
 
 (set-exec-path-from-shell-PATH)
 
-(use-package ivy-posframe
-    :ensure t)
-  ;; Different command can use different display function.
-  (setq ivy-posframe-display-functions-alist
-    '((swiper          . ivy-posframe-display-at-window-center)
-      (complete-symbol . ivy-posframe-display-at-window-center)
-      (counsel-M-x     . ivy-posframe-display-at-window-center)
-      (counsel-find-file     . ivy-posframe-display-at-window-center)
-      (fuzzy-finder-find-files-projectile     . ivy-posframe-display-at-window-center)
-      (t               . ivy-posframe-display-at-window-center)))
-  (ivy-posframe-mode 1)
-(setq ivy-posframe-height-alist '((swiper . 10)
-                                  (t      . 10)))
+;;   (use-package ivy-posframe
+;;     :ensure t)
+;;   ;; Different command can use different display function.
+;;   (setq ivy-posframe-display-functions-alist
+;;     '((swiper          . ivy-posframe-display-at-window-center)
+;;       (complete-symbol . ivy-posframe-display-at-window-center)
+;;       (counsel-M-x     . ivy-posframe-display-at-window-center)
+;;       (counsel-find-file     . ivy-posframe-display-at-window-center)
+;;       (fuzzy-finder-find-files-projectile     . ivy-posframe-display-at-window-center)
+;;       (t               . ivy-posframe-display-at-window-center)))
+;;   (ivy-posframe-mode 1)
+;; (setq ivy-posframe-height-alist '((swiper . 10)
+;;                                   (t      . 10)))
 
 (use-package dumb-jump
      :ensure t)
@@ -1266,3 +1273,12 @@ This is particularly useful under Mac OSX, where GUI apps are not started from a
     ("i" dumb-jump-go-prompt "Prompt")
     ("l" dumb-jump-quick-look "Quick look")
     ("b" dumb-jump-back "Back"))
+
+(use-package emmet-mode
+  :ensure t)
+(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
+(add-hook 'html-mode-hook 'emmet-mode)
+(add-hook 'css-mode-hook  'emmet-mode)
+
+(add-hook 'emmet-mode-hook (lambda () (setq emmet-indentation 2))) ;; indent 2 spaces.
+(setq emmet-move-cursor-between-quotes t) ;; default nil
