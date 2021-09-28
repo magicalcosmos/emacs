@@ -1,3 +1,7 @@
+(defun bl/set-js-indentation ()
+  (setq js-indent-level 2)
+  (setq evil-shift-width js-indent-level)
+  (setq-default tab-width 2))
 (use-package js2-mode
 :ensure t
 :ensure ac-js2
@@ -5,7 +9,14 @@
 (progn
 (add-hook 'js-mode-hook 'js2-minor-mode)
 (add-hook 'js2-mode-hook 'ac-js2-mode)
-))
+;; Set up proper indentation in JavaScript and JSON files
+(add-hook 'js2-mode-hook #'bl/set-js-indentation)
+(add-hook 'json-mode-hook #'bl/set-js-indentation))
+:config
+;; Use js2-mode for Node scripts
+(add-to-list 'magic-mode-alist '("#!/usr/bin/env node" . js2-mode))
+;; Don't use built-in syntax checking
+(setq js2-mode-show-strict-warnings nil))
 
 (use-package js2-refactor
 :ensure t
