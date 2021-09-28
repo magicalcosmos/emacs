@@ -179,3 +179,8 @@
 ;; Use spaces instead of tabs for indentation
 (setq-default indent-tabs-mode nil)
 (global-auto-revert-mode t)
+
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(setq ido-use-filename-at-point 'guess)
+(ido-mode 1)
