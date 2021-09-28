@@ -154,12 +154,9 @@
 
 (add-to-list 'load-path "~/.emacs.d/etc/lisp")
 (add-to-list 'load-path "~/.emacs.d/etc/core")
+(add-to-list 'load-path "~/.emacs.d/theme")
 
-(require 'color-rg)
-(require 'init-which-key)
-(require 'init-swiper-ivy-counsel)
-(require 'init-evil)
-
+(load-file (expand-file-name "init-early.el" user-emacs-directory))
 
 ;; user custom config
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
