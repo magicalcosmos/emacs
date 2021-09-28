@@ -23,7 +23,7 @@
 (use-package lsp-ui
   :after lsp-mode
   :hook(lsp-mode . lsp-ui-mode)
-  :init(setq lsp-ui-doc-enable t
+  :init(setq lsp-ui-doc-enable nil
              lsp-ui-doc-use-webkit nil
              lsp-ui-doc-delay 0
              lsp-ui-doc-include-signature t

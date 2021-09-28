@@ -29,6 +29,6 @@
 (require 'init-org)
 
 (require 'init-drag-stuff)
-
+(require 'init-dumb-jump)
 (require 'init-vterm)
 ;;(require 'init-ibuffer)
