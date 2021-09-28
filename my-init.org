@@ -6,6 +6,7 @@
   #+begin_src emacs-lisp
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
   #+end_src
+  
 * Straight
 #+begin_src emacs-lisp
 
@@ -39,7 +40,7 @@
     sml/mode-width 'right
   sml/name-width 60)
         (sml/setup))
-  
+
 
   (setq rm-excluded-modes
     (mapconcat
@@ -150,7 +151,7 @@
 
 * Which key
 #+begin_src emacs-lisp
-(use-package which-key 
+(use-package which-key
 :ensure t
 :init (which-key-mode)
 :diminish which-key-mode
@@ -229,7 +230,7 @@
             (setq css-indent-offset 2)
             ))
   #+end_src
-    
+
 * Lsp-mode
 #+begin_src emacs-lisp
     ;; lsp-mode
@@ -339,7 +340,7 @@
           ;; Set minibuffer height for different commands
           (setf (alist-get 'counsel-projectile-ag ivy-height-alist) 15)
           (setf (alist-get 'counsel-projectile-rg ivy-height-alist) 15)
-          (setf (alist-get 'swiper ivy-height-alist) 15)
+         (setf (alist-get 'swiper ivy-height-alist) 15)
           (setf (alist-get 'counsel-switch-buffer ivy-height-alist) 7))
 
 
@@ -437,7 +438,7 @@
 
   #+RESULTS:
 
-  
+
 * Flycheck
   #+begin_src emacs-lisp
     (use-package flycheck
@@ -457,7 +458,7 @@
 (setq yas-snippet-dirs
       '("~/.emacs.d/snippets"                 ;; personal snippets
         ))
-    (yas-reload-all)) 
+    (yas-reload-all))
 (use-package auto-yasnippet
   :bind
   (("C-c & w" . aya-create)
@@ -503,7 +504,7 @@
     :defer t)
 
   #+end_src
-  
+
 * IBuffer
   #+begin_src emacs-lisp
         (global-set-key (kbd "C-x C-b") 'ibuffer)
@@ -543,7 +544,7 @@
         (setq ibuffer-expert t)
   #+end_src
 
-* PDF 
+* PDF
   #+begin_src emacs-lisp
 (use-package pdf-tools
   :ensure t
@@ -585,7 +586,7 @@
 
 (use-package js2-refactor
 :ensure t
-:config 
+:config
 (progn
 (js2r-add-keybindings-with-prefix "C-c C-m")
 ;; eg. extract function with `C-c C-m ef`.
@@ -641,7 +642,7 @@
   (setq web-mode-code-indent-offset 2))
 (add-hook 'web-mode-hook  'my-web-mode-hook)
   #+end_src
-  
+
 * Typescript and Javascript
 #+begin_src emacs-lisp
 (use-package nvm
@@ -683,7 +684,7 @@
 
 * Ripgrep
   #+begin_src emacs-lisp
-(use-package deadgrep 
+(use-package deadgrep
 :ensure t)
 
 (use-package rg
@@ -707,7 +708,7 @@
 
 * All the icons
   #+begin_src emacs-lisp
-(use-package all-the-icons 
+(use-package all-the-icons
 :ensure t
 :defer 0.5)
 
@@ -730,7 +731,7 @@
   #+end_src
 * Org-mode
   #+begin_src emacs-lisp
-  (use-package org 
+  (use-package org
       :ensure t
       :pin org)
 
@@ -764,19 +765,19 @@
               (alltodo "")))))
 
     (global-set-key (kbd "C-c c") 'org-capture)
-  
+
     (setq org-agenda-files '("~/Sync/orgfiles"))
-    (defadvice org-capture-finalize 
-        (after delete-capture-frame activate)  
-      "Advise capture-finalize to close the frame"  
-      (if (equal "capture" (frame-parameter nil 'name))  
+    (defadvice org-capture-finalize
+        (after delete-capture-frame activate)
+      "Advise capture-finalize to close the frame"
+      (if (equal "capture" (frame-parameter nil 'name))
           (delete-frame)))
 
-    (defadvice org-capture-destroy 
-        (after delete-capture-frame activate)  
-      "Advise capture-destroy to close the frame"  
-      (if (equal "capture" (frame-parameter nil 'name))  
-          (delete-frame)))  
+    (defadvice org-capture-destroy
+        (after delete-capture-frame activate)
+      "Advise capture-destroy to close the frame"
+      (if (equal "capture" (frame-parameter nil 'name))
+          (delete-frame)))
 
     (use-package noflet
       :ensure t )
@@ -933,7 +934,7 @@ These templates enable you to type things like <el and then hit Tab to expand th
   "oil" '(org-insert-link :which-key "insert link")
 
   "on"  '(org-toggle-narrow-to-subtree :which-key "toggle narrow")
-   
+
   "os"  '(bl/counsel-rg-org-files :which-key "search notes")
 
   "oa"  '(org-agenda :which-key "status")
@@ -1229,7 +1230,8 @@ These templates enable you to type things like <el and then hit Tab to expand th
 
 * Posframe
 #+begin_src emacs-lisp
-
+(use-package posframe
+:ensure -t)
 #+end_src
 * Wgrep
 #+begin_src emacs-lisp
@@ -1355,7 +1357,7 @@ These templates enable you to type things like <el and then hit Tab to expand th
   :ensure t
   :config (treemacs-set-scope-type 'Perspectives))
   #+end_src
- 
+
 
 * Dashboard
 #+begin_src emacs-lisp

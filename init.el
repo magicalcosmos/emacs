@@ -27,9 +27,22 @@
             (setq gc-cons-threshold 800000
                   gc-cons-percentage 0.1)))
 
+;; Prevent unwanted runtime compilation for gccemacs (native-comp) users;
+;; packages are compiled ahead-of-time when they are installed and site files
+;; are compiled when gccemacs is installed.
+;; REVIEW Remove after a month
+(setq comp-deferred-compilation nil
+      native-comp-deferred-compilation nil)
 
-(add-to-list 'load-path "~/.emacs.d/site-lisp/lisp")
-(require 'color-rg)
+;; In noninteractive sessions, prioritize non-byte-compiled source files to
+;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
+;; to skip the mtime checks on every *.elc file.
+(setq load-prefer-newer noninteractive)
+
+;; In Emacs 27+, package initialization occurs before `user-init-file' is
+;; loaded, but after `early-init-file'. Doom handles package initialization, so
+;; we must prevent Emacs from doing it early!
+(setq package-enable-at-startup nil)
 
 (setq package-enable-at-startup nil)
 
@@ -43,16 +56,18 @@
 (scroll-bar-mode -1)
 
 ;; Dis able the toolbar
-(tool-bar-mode -1) 
+(tool-bar-mode -1)
+
+(show-paren-mode 1)
 
 ;; give some breathing room
-(set-fringe-mode 10) 
+(set-fringe-mode 10)
 
 ;; Diable the menu bar
-(menu-bar-mode -1) 
+(menu-bar-mode -1)
 
 ;; set up the visiable bell
-(setq visible-bell t) 
+(setq visible-bell t)
 
 ;; yes to y, no to n
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -63,7 +78,7 @@
 ;; set realtive numbers
 (display-line-numbers-mode t)
 ;; set type of line numbering (global variable)
-(setq display-line-numbers-type 'relative) 
+(setq display-line-numbers-type 'relative)
 ;; activate line numbering in all buffers/modes
 (global-display-line-numbers-mode)
 ;; Activate line numbering in programming modes
@@ -122,6 +137,7 @@
 (package-install 'use-package))
 (setq use-package-always-ensure t)
 
+
 ;; chords
 (use-package use-package-chords
   :ensure t
@@ -134,7 +150,16 @@
 
 ;; restart emacs
 (use-package restart-emacs)
-(org-babel-load-file (expand-file-name "~/.emacs.d/my-init.org"))
+;;(org-babel-load-file (expand-file-name "~/.emacs.d/my-init.org"))
+
+(add-to-list 'load-path "~/.emacs.d/etc/lisp")
+(add-to-list 'load-path "~/.emacs.d/etc/core")
+
+(require 'color-rg)
+(require 'init-which-key)
+(require 'init-swiper-ivy-counsel)
+(require 'init-evil)
+
 
 ;; user custom config
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -157,4 +182,3 @@
 ;; Use spaces instead of tabs for indentation
 (setq-default indent-tabs-mode nil)
 (auto-revert-mode t)
-
