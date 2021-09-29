@@ -73,38 +73,38 @@
   (defun bl/dont-arrow-me-bro ()
   (interactive)
   (message "Arrow keys are bad, you know?"))
-          (use-package evil
-            :init
-            (setq evil-want-fine-undo t)
-            (setq evil-shift-width 2)
-            (setq evil-want-keybinding nil)
-            (setq evil-want-integration t)
-            (setq evil-want-C-u-scroll t)
-            (setq evil-want-C-i-jump nil)
-            (setq evil-respect-visual-line-mode t)
-            :config
-            (add-hook 'evil-mode-hook 'bl/evil-hook)
-            (evil-mode 1)
-            (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-            (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+  (use-package evil
+    :init
+    (setq evil-want-fine-undo t)
+    (setq evil-shift-width 2)
+    (setq evil-want-keybinding nil)
+    (setq evil-want-integration t)
+    (setq evil-want-C-u-scroll t)
+    (setq evil-want-C-i-jump nil)
+    (setq evil-respect-visual-line-mode t)
+    :config
+    (add-hook 'evil-mode-hook 'bl/evil-hook)
+    (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
-            ;; Use visual line motions even outside of visual-line-mode buffers
-            (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-            (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
 
-            (unless bl/is-termux
-              ;; Disable arrow keys in normal and visual modes
-              (define-key evil-normal-state-map (kbd "<left>") 'bl/dont-arrow-me-bro)
-              (define-key evil-normal-state-map (kbd "<right>") 'bl/dont-arrow-me-bro)
-              (define-key evil-normal-state-map (kbd "<down>") 'bl/dont-arrow-me-bro)
-              (define-key evil-normal-state-map (kbd "<up>") 'bl/dont-arrow-me-bro)
-              (evil-global-set-key 'motion (kbd "<left>") 'bl/dont-arrow-me-bro)
-              (evil-global-set-key 'motion (kbd "<right>") 'bl/dont-arrow-me-bro)
-              (evil-global-set-key 'motion (kbd "<down>") 'bl/dont-arrow-me-bro)
-              (evil-global-set-key 'motion (kbd "<up>") 'bl/dont-arrow-me-bro))
+    (unless bl/is-termux
+      ;; Disable arrow keys in normal and visual modes
+      (define-key evil-normal-state-map (kbd "<left>") 'bl/dont-arrow-me-bro)
+      (define-key evil-normal-state-map (kbd "<right>") 'bl/dont-arrow-me-bro)
+      (define-key evil-normal-state-map (kbd "<down>") 'bl/dont-arrow-me-bro)
+      (define-key evil-normal-state-map (kbd "<up>") 'bl/dont-arrow-me-bro)
+      (evil-global-set-key 'motion (kbd "<left>") 'bl/dont-arrow-me-bro)
+      (evil-global-set-key 'motion (kbd "<right>") 'bl/dont-arrow-me-bro)
+      (evil-global-set-key 'motion (kbd "<down>") 'bl/dont-arrow-me-bro)
+      (evil-global-set-key 'motion (kbd "<up>") 'bl/dont-arrow-me-bro))
 
-            (evil-set-initial-state 'messages-buffer-mode 'normal)
-            (evil-set-initial-state 'dashboard-mode 'normal))
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
 (global-undo-tree-mode)
 (evil-set-undo-system 'undo-tree)
 
@@ -1183,34 +1183,34 @@
   :config (treemacs-set-scope-type 'Perspectives))
 
 (use-package dashboard
-              :ensure t
-              :config
-              (dashboard-setup-startup-hook))
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
 
-            (setq dashboard-items '(
-                                    ;;(recents  . 5)
-                                    ;;(bookmarks . 5)
-                                    (agenda . 5)
-                                    (projects . 5)
-                                    ;;(registers . 5)
-                                    ))
-            (setq dashboard-set-heading-icons t)
-            (setq dashboard-set-file-icons t)
-            (setq dashboard-set-init-info t)
-            ;;(setq dashboard-startup-banner "~/.emacs.d/emacs-logo.png")
-            (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
-            (setq dashboard-week-agenda t)
-            ;;(setq dashboard-filter-agenda-entry dashboard-no-filter-agenda)
-            ;;(setq dashboard-match-agenda-entry "~/Sync/orgfiles";; Content is not centered by default. To center, set
-            (setq dashboard-center-content t)
-            ;; To disable shortcut "jump" indicators for each section, set
-            (setq dashboard-show-shortcuts nil)
-          (dashboard-modify-heading-icons '((recents . "file-text")
+(setq dashboard-items '(
+                        ;;(recents  . 5)
+                        ;;(bookmarks . 5)
+                        (agenda . 5)
+                        (projects . 5)
+                        ;;(registers . 5)
+                        ))
+(setq dashboard-set-heading-icons t)
+(setq dashboard-set-file-icons t)
+(setq dashboard-set-init-info t)
+;;(setq dashboard-startup-banner "~/.emacs.d/emacs-logo.png")
+(setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+(setq dashboard-week-agenda t)
+;;(setq dashboard-filter-agenda-entry dashboard-no-filter-agenda)
+;;(setq dashboard-match-agenda-entry "~/Sync/orgfiles";; Content is not centered by default. To center, set
+(setq dashboard-center-content t)
+;; To disable shortcut "jump" indicators for each section, set
+(setq dashboard-show-shortcuts nil)
+(dashboard-modify-heading-icons '((recents . "file-text")
                                             (bookmarks . "book")))
-        (setq dashboard-set-navigator t)
-      (setq dashboard-set-footer nil)
-    (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
-  (setq dashboard-org-agenda-categories '("Tasks" "Appointments"))
+(setq dashboard-set-navigator t)
+(setq dashboard-set-footer nil)
+(setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+(setq dashboard-org-agenda-categories '("Tasks" "Appointments"))
 (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
 
 ;;(use-package eaf
