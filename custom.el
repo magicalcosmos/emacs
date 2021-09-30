@@ -18,5 +18,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(git-timemachine-minibuffer-author-face ((t (:inherit success))))
+ '(git-timemachine-minibuffer-detail-face ((t (:inherit warning))))
  '(transient-posframe ((t (:inherit tooltip))))
  '(transient-posframe-border ((t (:background "#5B6268")))))
