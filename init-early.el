@@ -12,7 +12,7 @@
 (require 'init-which-key)
 
 (require 'init-swiper-ivy-counsel)
-(require 'init-ivy-posframe)
+;;(require 'init-ivy-posframe)
 (require 'init-evil)
 
 (require 'init-dired)
