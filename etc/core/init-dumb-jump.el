@@ -1,7 +1,7 @@
 (use-package dumb-jump
    :ensure t)
   (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-(defhydra dumb-jump-hydra (:color blue :columns 3)
+  (defhydra dumb-jump-hydra (:color blue :columns 3)
   "Dumb Jump"
   ("j" dumb-jump-go "Go")
   ("o" dumb-jump-go-other-window "Other window")
