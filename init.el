@@ -140,9 +140,11 @@
 (set-face-attribute 'default nil :height 180)
 
 (require 'package)
-(setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
-                         ("melpa" . "http://elpa.emacs-china.org/melpa/")
-                         ("org" . "http://elpa.emacs-china.org/org/")))
+;;optimise loading package
+(setq package-archives
+      '(("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+        ("org"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
+        ("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")))
 
 (package-initialize)
 
