@@ -173,6 +173,7 @@
 (add-to-list 'load-path "~/.emacs.d/etc/core")
 (add-to-list 'load-path "~/.emacs.d/theme")
 
+
 (load-file (expand-file-name "init-early.el" user-emacs-directory))
 
 ;; user custom config

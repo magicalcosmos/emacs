@@ -31,4 +31,8 @@
 (require 'init-drag-stuff)
 (require 'init-dumb-jump)
 (require 'init-vterm)
+
+(require 'init-company-tabnine)
+(require 'init-focus)
+;;(require 'init-minimap)
 ;;(require 'init-ibuffer)
