@@ -33,6 +33,9 @@
 (require 'init-vterm)
 
 (require 'init-company-tabnine)
-(require 'init-focus)
+;;(require 'init-focus)
+;;(require 'init-helm)
+(require 'init-helm-swoop)
+;;(require 'init-crux)
 ;;(require 'init-minimap)
 ;;(require 'init-ibuffer)

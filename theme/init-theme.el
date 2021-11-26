@@ -33,13 +33,13 @@
 
 
 ;;gruvbox-dark-medium, gruvbox-dark-soft, gruvbox-dark-hard,
-(use-package gruvbox-theme
-             :config
-             (load-theme 'gruvbox t))
-
-; (use-package monokai-theme
+; (use-package gruvbox-theme
 ;              :config
-;              (load-theme 'monokai t))
+;              (load-theme 'gruvbox t))
+
+(use-package monokai-theme
+             :config
+             (load-theme 'monokai t))
 
 
 (setq rm-excluded-modes

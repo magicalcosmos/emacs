@@ -87,6 +87,20 @@
 ;; yes to y, no to n
 (fset 'yes-or-no-p 'y-or-n-p)
 
+;; buffer to right
+; (setq split-width-threshold nil)
+;
+; (global-set-key (kbd "C-x C-b")
+;                 (lambda ()
+;                         (interactive)
+;                         (let ((display-buffer-overriding-action ;; force window
+;                                                                 '((display-buffer-reuse-window
+;                                                                    display-buffer-same-window)
+;                                                                   (inhibit-same-window . nil))))
+;                           (split-window-horizontally) ;; split window
+;                           (other-window 1) ;; change it
+;                           (list-buffers))))
+
 ;; ESC Cancels All
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -202,3 +216,9 @@
 (setq ido-everywhere t)
 (setq ido-use-filename-at-point 'guess)
 (ido-mode 1)
+
+
+
+(defun show-in-finder ()
+  (interactive)
+  (shell-command (concat "open -R " buffer-file-name)))
