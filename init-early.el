@@ -36,6 +36,7 @@
 ;;(require 'init-focus)
 ;;(require 'init-helm)
 (require 'init-helm-swoop)
+(require 'multiple-cursors)
 ;;(require 'init-crux)
 ;;(require 'init-minimap)
 ;;(require 'init-ibuffer)
