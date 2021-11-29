@@ -22,13 +22,13 @@
 # NOTE
 # QtWebEngine will throw error "ImportError: QtWebEngineWidgets must be imported before a QCoreApplication instance is created"
 # So we import browser module before start Qt application instance to avoid this error, but we never use this module.
-from app.browser.buffer import AppBuffer as NeverUsed # noqa
+from PyQt5 import QtWebEngineWidgets as NeverUsed # noqa
 
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QLibraryInfo, QTimer
-from PyQt5.QtNetwork import QNetworkProxy
+from PyQt5.QtNetwork import QNetworkProxy, QNetworkProxyFactory
 from PyQt5.QtWidgets import QApplication
-from core.utils import PostGui, string_to_base64, eval_in_emacs, init_epc_client, close_epc_client, message_to_emacs, list_string_to_list, get_emacs_var, get_emacs_config_dir
+from core.utils import PostGui, string_to_base64, eval_in_emacs, init_epc_client, close_epc_client, message_to_emacs, list_string_to_list, get_emacs_vars, get_emacs_config_dir, to_camel_case
 from core.view import View
 from epc.server import ThreadingEPCServer
 from sys import version_info
@@ -53,6 +53,7 @@ class EAF(object):
         emacs_height = int(emacs_height)
 
         # Init variables.
+        self.module_dict = {}
         self.buffer_dict = {}
         self.view_dict = {}
 
@@ -61,7 +62,8 @@ class EAF(object):
 
         # Build EPC server.
         self.server = ThreadingEPCServer(('localhost', 0), log_traceback=True)
-        self.server.logger.setLevel(logging.DEBUG)
+        # self.server = ThreadingEPCServer(('localhost', 0)
+        # self.server.logger.setLevel(logging.DEBUG)
         self.server.allow_reuse_address = True
 
         eaf_config_dir = get_emacs_config_dir()
@@ -70,9 +72,11 @@ class EAF(object):
         if not os.path.exists(eaf_config_dir):
             os.makedirs(eaf_config_dir);
 
-        ch = logging.FileHandler(filename=os.path.join(eaf_config_dir, 'epc_log.txt'), mode='w')
-        ch.setLevel(logging.DEBUG)
-        self.server.logger.addHandler(ch)
+        # ch = logging.FileHandler(filename=os.path.join(eaf_config_dir, 'epc_log.txt'), mode='w')
+        # formatter = logging.Formatter('%(asctime)s | %(levelname)-8s | %(lineno)04d | %(message)s')
+        # ch.setFormatter(formatter)
+        # ch.setLevel(logging.DEBUG)
+        # self.server.logger.addHandler(ch)
 
         self.server.register_instance(self) # register instance functions let elisp side call
 
@@ -81,12 +85,16 @@ class EAF(object):
         self.server_thread.start()
 
         # Pass epc port and webengine codec information to Emacs when first start EAF.
-        eval_in_emacs('eaf--first-start', [self.server.server_address[1], self.webengine_include_private_codec()])
+        eval_in_emacs('eaf--first-start', [self.server.server_address[1]])
+
+        # Disable use system proxy, avoid page slow when no network connected.
+        QNetworkProxyFactory.setUseSystemConfiguration(False)
 
         # Set Network proxy.
-        proxy_host = get_emacs_var("eaf-proxy-host")
-        proxy_port = get_emacs_var("eaf-proxy-port")
-        proxy_type = get_emacs_var("eaf-proxy-type")
+        (proxy_host, proxy_port, proxy_type) = get_emacs_vars([
+            "eaf-proxy-host",
+            "eaf-proxy-port",
+            "eaf-proxy-type"])
 
         self.proxy = (proxy_type, proxy_host, proxy_port)
         self.is_proxy = False
@@ -127,24 +135,12 @@ class EAF(object):
         else:
             self.enable_proxy()
 
-    def build_emacs_server_connect(self, port):
-        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        conn.connect(('127.0.0.1', port))
-        return conn
-
     def get_command_result(self, command):
         ''' Execute the command and return the result. '''
         if version_info >= (3,7):
             return subprocess.run(command, check=False, shell=True, stdout=subprocess.PIPE, text=True).stdout
         else:
             return subprocess.run(command, check=False, shell=True, stdout=subprocess.PIPE).stdout
-
-    def webengine_include_private_codec(self):
-        ''' Return bool of whether the QtWebEngineProcess include private codec. '''
-        if platform.system() in ["Windows", "Darwin"]:
-            return False
-        path = os.path.join(QLibraryInfo.location(QLibraryInfo.LibraryExecutablesPath), "QtWebEngineProcess")
-        return self.get_command_result("ldd {} | grep libavformat".format(path)) != ""
 
     @PostGui()
     def update_buffer_with_url(self, module_path, buffer_url, update_data):
@@ -174,9 +170,13 @@ class EAF(object):
         global emacs_width, emacs_height, proxy_string
 
         # Load module with app absolute path.
-        spec = importlib.util.spec_from_file_location("AppBuffer", module_path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+        if module_path in self.module_dict:
+            module = self.module_dict[module_path]
+        else:
+            spec = importlib.util.spec_from_file_location("AppBuffer", module_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            self.module_dict[module_path] = module
 
         # Create application buffer.
         app_buffer = module.AppBuffer(buffer_id, url, arguments)
@@ -218,9 +218,6 @@ class EAF(object):
         ''' Update views.'''
         view_infos = args.split(",")
 
-        # Show cursor anyway.
-        QtWidgets.qApp.restoreOverrideCursor()
-
         # Do something if buffer's all view hide after update_views operation.
         old_view_buffer_ids = list(set(map(lambda v: v.buffer_id, self.view_dict.values())))
         new_view_buffer_ids = list(set(map(lambda v: v.split(":")[0], view_infos)))
@@ -231,15 +228,16 @@ class EAF(object):
         # such as QGraphicsVideoItem will report "Internal data stream error" error.
         for old_view_buffer_id in old_view_buffer_ids:
             if old_view_buffer_id not in new_view_buffer_ids:
-                self.buffer_dict[old_view_buffer_id].all_views_hide()
+                if old_view_buffer_id in self.buffer_dict:
+                    self.buffer_dict[old_view_buffer_id].all_views_hide()
 
         # Remove old key from view dict and destroy old view.
         for key in list(self.view_dict):
             if key not in view_infos:
-                self.view_dict[key].destroy_view()
-                self.view_dict.pop(key, None)
+                self.destroy_view_later(key)
 
-        # Create new view and update in view dict.
+        # NOTE:
+        # Create new view and REPARENT view to Emacs window.
         if view_infos != ['']:
             for view_info in view_infos:
                 if view_info not in self.view_dict:
@@ -253,7 +251,8 @@ class EAF(object):
         if view_infos != ['']:
             for new_view_buffer_id in new_view_buffer_ids:
                 if new_view_buffer_id not in old_view_buffer_ids:
-                    self.buffer_dict[new_view_buffer_id].some_view_show()
+                    if new_view_buffer_id in self.buffer_dict:
+                        self.buffer_dict[new_view_buffer_id].some_view_show()
 
         # Adjust buffer size along with views change.
         # Note: just buffer that option `fit_to_view' is False need to adjust,
@@ -274,6 +273,47 @@ class EAF(object):
                 # Send resize signal to buffer.
                 buffer.resize_view()
 
+        # NOTE:
+        # When you do switch buffer or kill buffer in Emacs, will call Python function 'update_views.
+        # Screen will flick if destroy old view BEFORE reparent new view.
+        #
+        # So we call function 'destroy_view_now' at last to make sure destroy old view AFTER reparent new view.
+        # Then screen won't flick.
+        self.destroy_view_now()
+
+    def destroy_view_later(self, key):
+        '''Just record view id in global list 'destroy_view_list', and not destroy old view immediately.'''
+        global destroy_view_list
+
+        destroy_view_list.append(key)
+
+    def destroy_view_now(self):
+        '''Destroy all old view immediately.'''
+        global destroy_view_list
+
+        for key in destroy_view_list:
+            if key in self.view_dict:
+                self.view_dict[key].destroy_view()
+            self.view_dict.pop(key, None)
+
+        destroy_view_list = []
+
+    @PostGui()
+    def kill_buffer(self, buffer_id):
+        ''' Kill all view based on buffer_id and clean buffer from buffer dict.'''
+        # Kill all view base on buffer_id.
+        for key in list(self.view_dict):
+            if buffer_id == self.view_dict[key].buffer_id:
+                self.destroy_view_later(key)
+
+        # Clean buffer from buffer dict.
+        if buffer_id in self.buffer_dict:
+            # Save buffer session.
+            self.save_buffer_session(self.buffer_dict[buffer_id])
+
+            self.buffer_dict[buffer_id].destroy_buffer()
+            self.buffer_dict.pop(buffer_id, None)
+
     @PostGui()
     def kill_emacs(self):
         ''' Kill all buffurs from buffer dict.'''
@@ -283,23 +323,6 @@ class EAF(object):
 
         for buffer_id in tmp_buffer_dict:
             self.kill_buffer(buffer_id)
-
-    @PostGui()
-    def kill_buffer(self, buffer_id):
-        ''' Kill all view based on buffer_id and clean buffer from buffer dict.'''
-        # Kill all view base on buffer_id.
-        for key in list(self.view_dict):
-            if buffer_id == self.view_dict[key].buffer_id:
-                self.view_dict[key].destroy_view()
-                self.view_dict.pop(key, None)
-
-        # Clean buffer from buffer dict.
-        if buffer_id in self.buffer_dict:
-            # Save buffer session.
-            self.save_buffer_session(self.buffer_dict[buffer_id])
-
-            self.buffer_dict[buffer_id].destroy_buffer()
-            self.buffer_dict.pop(buffer_id, None)
 
     @PostGui()
     def execute_function(self, buffer_id, function_name, event_string):
@@ -313,6 +336,30 @@ class EAF(object):
                 import traceback
                 traceback.print_exc()
                 message_to_emacs("Cannot execute function: " + function_name + " (" + buffer_id + ")")
+
+    @PostGui()
+    def eval_js_function(self, buffer_id, function_name, function_arguments):
+        ''' Eval JavaScript function and do not return anything. '''
+        if type(buffer_id) == str and buffer_id in self.buffer_dict:
+            try:
+                buffer = self.buffer_dict[buffer_id]
+                buffer.eval_js_function(function_name, function_arguments)
+            except AttributeError:
+                import traceback
+                traceback.print_exc()
+                message_to_emacs("Cannot execute JavaScript function: " + to_camel_case(function_name) + " (" + buffer_id + ")")
+
+    def execute_js_function(self, buffer_id, function_name, function_arguments):
+        ''' Execute JavaScript function and do not return anything. '''
+        if type(buffer_id) == str and buffer_id in self.buffer_dict:
+            try:
+                buffer = self.buffer_dict[buffer_id]
+                return buffer.execute_js_function(function_name, function_arguments)
+            except AttributeError:
+                import traceback
+                traceback.print_exc()
+                message_to_emacs("Cannot execute JavaScript function: " + to_camel_case(function_name) + " (" + buffer_id + ")")
+                return None
 
     def call_function(self, buffer_id, function_name):
         ''' Call function and return the result. '''
@@ -340,7 +387,7 @@ class EAF(object):
         if platform.system() == "Windows":
             return gw.getActiveWindow()._hWnd
 
-    def activate_emacs_wsl_window(self, frame_title):
+    def activate_emacs_win32_window(self, frame_title):
         if platform.system() == "Windows":
             w = gw.getWindowsWithTitle(frame_title)
             w[0].activate()
@@ -370,12 +417,29 @@ class EAF(object):
             if buffer.buffer_id == buffer_id:
                 buffer.handle_input_response(callback_tag, callback_result)
 
+                buffer.stop_search_input_monitor_thread()
+
     @PostGui()
     def cancel_input_response(self, buffer_id, callback_tag):
         ''' Cancel input message for specified buffer.'''
         for buffer in list(self.buffer_dict.values()):
             if buffer.buffer_id == buffer_id:
                 buffer.cancel_input_response(callback_tag)
+
+                buffer.stop_marker_input_monitor_thread()
+                buffer.stop_search_input_monitor_thread()
+
+    @PostGui()
+    def handle_search_forward(self, buffer_id, callback_tag):
+        for buffer in list(self.buffer_dict.values()):
+            if buffer.buffer_id == buffer_id:
+                buffer.handle_search_forward(callback_tag)
+
+    @PostGui()
+    def handle_search_backward(self, buffer_id, callback_tag):
+        for buffer in list(self.buffer_dict.values()):
+            if buffer.buffer_id == buffer_id:
+                buffer.handle_search_backward(callback_tag)
 
     @PostGui()
     def update_focus_text(self, buffer_id, new_text):
@@ -467,14 +531,6 @@ class EAF(object):
                     if buf.url in session_dict[buf.module_path]:
                         buf.restore_session_data(session_dict[buf.module_path][buf.url])
 
-                        print("Session restored: ", buf.buffer_id, buf.module_path, self.session_file)
-                    else:
-                        print("Session is not restored, as no data about %s." % (buf.url))
-                else:
-                    print("Session is not restored, as no data present in session file.")
-        else:
-            print("Session is not restored, as %s cannot be found." % (self.session_file))
-
     def cleanup(self):
         '''Do some cleanup before exit python process.'''
         close_epc_client()
@@ -487,6 +543,8 @@ if __name__ == "__main__":
 
     emacs_width = emacs_height = 0
 
+    destroy_view_list = []
+
     hardware_acceleration_args = []
     if platform.system() != "Windows":
         hardware_acceleration_args += [
@@ -497,8 +555,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv + ["--disable-web-security"] + hardware_acceleration_args)
 
     eaf = EAF(sys.argv[1:])
-
-    print("EAF process starting...")
 
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     sys.exit(app.exec_())

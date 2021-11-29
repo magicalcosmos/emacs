@@ -20,15 +20,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from PyQt5 import QtCore
-from PyQt5.QtGui import QCursor
-from PyQt5.QtGui import QFocusEvent
-from PyQt5.QtWidgets import QGraphicsScene
-from PyQt5.QtCore import Qt, QEvent
-from PyQt5.QtGui import QKeyEvent
-from PyQt5.QtWidgets import QApplication, qApp
-from core.utils import interactive, abstract, get_clipboard_text, set_clipboard_text, eval_in_emacs, message_to_emacs, input_message
+from PyQt5.QtGui import QKeyEvent, QCursor, QFocusEvent, QBrush, QColor
+from PyQt5.QtWidgets import QGraphicsScene, QApplication, qApp
+from PyQt5.QtCore import Qt, QEvent, QThread
+from core.utils import interactive, abstract, get_clipboard_text, set_clipboard_text, eval_in_emacs, message_to_emacs, input_message, get_emacs_vars, get_emacs_var, get_emacs_func_result, get_emacs_theme_mode, get_emacs_theme_foreground, get_emacs_theme_background
 import abc
 import string
+import time
 
 qt_key_dict = {}
 
@@ -112,17 +110,21 @@ class Buffer(QGraphicsScene):
         self.url = url
         self.arguments = arguments
         self.fit_to_view = fit_to_view
-
         self.title = ""
+        self.current_event_string = ""
 
         self.buffer_widget = None
-
         self.is_fullscreen = False
-
-        self.current_event_string = ""
 
         self.aspect_ratio = 0
         self.vertical_padding_ratio = 1.0 / 8
+
+        self.fetch_marker_input_thread = None
+        self.fetch_search_input_thread = None
+
+        self.theme_mode = get_emacs_theme_mode()
+        self.theme_foreground_color = get_emacs_theme_foreground()
+        self.theme_background_color = get_emacs_theme_background()
 
         self.enter_fullscreen_request.connect(self.enable_fullscreen)
         self.exit_fullscreen_request.connect(self.disable_fullscreen)
@@ -190,6 +192,10 @@ class Buffer(QGraphicsScene):
 
     def add_widget(self, widget):
         ''' Add widget.'''
+        # Init background color before addWidget.
+        if not hasattr(self, "background_color"):
+            self.background_color = QColor(self.theme_background_color)
+
         self.buffer_widget = widget
         self.addWidget(self.buffer_widget)
 
@@ -236,11 +242,41 @@ class Buffer(QGraphicsScene):
 
         CALLBACK_TAG is the reference tag when handle_input_message is invoked.
 
-        INPUT_TYPE must be one of "string", "file", or "yes-or-no".
+        INPUT_TYPE must be one of "string", "file", "yes-or-no", "marker" or "search".
 
         INITIAL_CONTENT is the intial content of the user response, it is only useful when INPUT_TYPE is "string".
         '''
         input_message(self.buffer_id, message, callback_tag, input_type, initial_content)
+
+        if input_type == "marker" and (not hasattr(getattr(self, "fetch_marker_callback"), "abstract")):
+            self.start_marker_input_monitor_thread(callback_tag)
+        elif input_type == "search":
+            self.start_search_input_monitor_thread(callback_tag)
+
+    @abstract
+    def fetch_marker_callback(self):
+        pass
+
+    def start_marker_input_monitor_thread(self, callback_tag):
+        self.fetch_marker_input_thread = FetchMarkerInputThread(callback_tag, self.fetch_marker_callback)
+        self.fetch_marker_input_thread.match_marker.connect(self.handle_input_response)
+        self.fetch_marker_input_thread.start()
+
+    def stop_marker_input_monitor_thread(self):
+        if self.fetch_marker_input_thread != None and self.fetch_marker_input_thread.isRunning():
+            self.fetch_marker_input_thread.running_flag = False
+            self.fetch_marker_input_thread = None
+
+    def start_search_input_monitor_thread(self, callback_tag):
+        self.fetch_search_input_thread = FetchSearchInputThread(callback_tag)
+        self.fetch_search_input_thread.search_changed.connect(self.handle_input_response)
+        self.fetch_search_input_thread.search_finish.connect(self.handle_search_finish)
+        self.fetch_search_input_thread.start()
+
+    def stop_search_input_monitor_thread(self):
+        if self.fetch_search_input_thread != None and self.fetch_search_input_thread.isRunning():
+            self.fetch_search_input_thread.stop()
+            self.fetch_search_input_thread = None
 
     @abstract
     def handle_input_response(self, callback_tag, result_content):
@@ -252,6 +288,18 @@ class Buffer(QGraphicsScene):
 
     @abstract
     def cancel_input_response(self, callback_tag):
+        pass
+
+    @abstract
+    def handle_search_forward(self, callback_tag):
+        pass
+
+    @abstract
+    def handle_search_backward(self, callback_tag):
+        pass
+
+    @abstract
+    def handle_search_finish(self, callback_tag):
         pass
 
     @abstract
@@ -272,6 +320,16 @@ class Buffer(QGraphicsScene):
     def execute_function(self, function_name):
         ''' Execute function.'''
         getattr(self, function_name)()
+
+    @abstract
+    def eval_js_function(self, function_name, function_arguments):
+        ''' Eval JavaScript function.'''
+        pass
+
+    @abstract
+    def execute_js_function(self, function_name, function_arguments):
+        ''' Execute JavaScript function and return result.'''
+        return None
 
     def call_function(self, function_name):
         ''' Call function.'''
@@ -375,3 +433,72 @@ class Buffer(QGraphicsScene):
 
         # Activate emacs window when call focus widget, avoid first char is not
         eval_in_emacs('eaf-activate-emacs-window', [])
+
+class FetchMarkerInputThread(QThread):
+
+    match_marker = QtCore.pyqtSignal(str, str)
+
+    def __init__(self, callback_tag, fetch_marker_callback):
+        QThread.__init__(self)
+
+        self.callback_tag = callback_tag
+        self.running_flag = True
+
+        self.fetch_marker_callback = fetch_marker_callback
+        self.marker_quit_keys = get_emacs_var("eaf-marker-quit-keys") or ""
+        self.markers = self.fetch_marker_callback()
+
+    def run(self):
+        while self.running_flag:
+            ## In some cases, the markers may not be ready when fetch_marker_callback is first called,
+            ## so we need to call fetch_marker_callback multiple times.
+            if len(self.markers) == 0:
+                self.markers = self.fetch_marker_callback()
+            minibuffer_input = get_emacs_func_result("minibuffer-contents-no-properties", [])
+
+            marker_input_quit = len(minibuffer_input) > 0 and minibuffer_input[-1] in self.marker_quit_keys
+            marker_input_finish = minibuffer_input in self.markers
+
+            if marker_input_quit:
+                self.running_flag = False
+                eval_in_emacs('exit-minibuffer', [])
+                message_to_emacs("Quit marker selection.")
+                self.match_marker.emit(self.callback_tag, minibuffer_input)
+            elif marker_input_finish:
+                self.running_flag = False
+                eval_in_emacs('exit-minibuffer', [])
+                message_to_emacs("Marker selected.")
+                self.match_marker.emit(self.callback_tag, minibuffer_input)
+
+            time.sleep(0.1)
+
+class FetchSearchInputThread(QThread):
+
+    search_changed = QtCore.pyqtSignal(str, str)
+    search_finish = QtCore.pyqtSignal(str)
+
+    def __init__(self, callback_tag):
+        QThread.__init__(self)
+
+        self.search_string = ""
+        self.callback_tag = callback_tag
+        self.running_flag = True
+
+    def run(self):
+        while self.running_flag:
+            in_minibuffer = get_emacs_func_result("minibufferp", [])
+
+            if in_minibuffer:
+                minibuffer_input = get_emacs_func_result("minibuffer-contents-no-properties", [])
+
+                if minibuffer_input != self.search_string:
+                    self.search_changed.emit(self.callback_tag, minibuffer_input)
+                    self.search_string = minibuffer_input
+            else:
+                self.stop()
+
+            time.sleep(0.1)
+
+    def stop(self):
+        self.search_finish.emit(self.callback_tag)
+        self.running_flag = False

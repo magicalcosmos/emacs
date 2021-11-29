@@ -233,8 +233,36 @@ def eval_in_emacs(method_name, args):
         # Call eval-in-emacs elisp function.
         epc_client.call("eval-in-emacs", args)
 
-def message_to_emacs(message):
-    eval_in_emacs('eaf--show-message', [message])
+def get_emacs_theme_mode():
+    return get_emacs_func_result("eaf-get-theme-mode", [])
+
+def get_emacs_theme_background():
+    return get_emacs_func_result("eaf-get-theme-background-color", [])
+
+def get_emacs_theme_foreground():
+    return get_emacs_func_result("eaf-get-theme-foreground-color", [])
+
+def get_emacs_func_result(method_name, args):
+    global epc_client
+
+    if epc_client == None:
+        print("Please call init_epc_client first before callling eval_in_emacs.")
+    else:
+        args = list(map(convert_arg_to_str, args))
+        # Make argument encode with Base64, avoid string quote problem pass to elisp side.
+        args = list(map(string_to_base64, args))
+
+        args.insert(0, method_name)
+
+        # Call eval-in-emacs elisp function synchronously and return the result
+        result = epc_client.call_sync("eval-in-emacs", args)
+        return result if result != [] else False
+
+def message_to_emacs(message, prefix=True, logging=True):
+    eval_in_emacs('eaf--show-message', [message, prefix, logging])
+
+def clear_emacs_message():
+    eval_in_emacs('eaf--clear-message', [])
 
 def set_emacs_var(var_name, var_value):
     eval_in_emacs('eaf--set-emacs-var', [var_name, var_value])
@@ -248,14 +276,17 @@ def duplicate_page_in_new_tab(url):
 def open_url_in_new_tab(url):
     eval_in_emacs('eaf-open-browser', [url])
 
+def open_url_in_new_tab_other_window(url):
+    eval_in_emacs('eaf-open-browser-other-window', [url])
+
 def translate_text(text):
     eval_in_emacs('eaf-translate-text', [text])
 
 def input_message(buffer_id, message, callback_tag, input_type, input_content):
     eval_in_emacs('eaf--input-message', [buffer_id, message, callback_tag, input_type, input_content])
 
-def focus_emacs_buffer(message):
-    eval_in_emacs('eaf-focus-buffer', [message])
+def focus_emacs_buffer(buffer_id):
+    eval_in_emacs('eaf-focus-buffer', [buffer_id])
 
 def atomic_edit(buffer_id, focus_text):
     eval_in_emacs('eaf--atomic-edit', [buffer_id, focus_text])
@@ -292,10 +323,23 @@ def list_string_to_list(list_string):
     list_var = literal_eval(str(list_var))
     return list_var
 
+def convert_emacs_bool(symbol_value, symbol_is_boolean):
+    if symbol_is_boolean == "t":
+        return symbol_value == True
+    else:
+        return symbol_value
+
+def get_emacs_vars(args):
+    global epc_client
+
+    return list(map(lambda result: convert_emacs_bool(result[0], result[1]) if result != [] else False, epc_client.call_sync("get-emacs-vars", args)))
+
 def get_emacs_var(var_name):
     global epc_client
 
-    return epc_client.call_sync("get-emacs-var", [var_name])
+    (symbol_value, symbol_is_boolean) = epc_client.call_sync("get-emacs-var", [var_name])
+
+    return convert_emacs_bool(symbol_value, symbol_is_boolean)
 
 emacs_config_dir = ""
 
@@ -306,3 +350,7 @@ def get_emacs_config_dir():
         emacs_config_dir = os.path.join(os.path.expanduser(get_emacs_var("eaf-config-location")), '')
 
     return emacs_config_dir
+
+def to_camel_case(string):
+    components = string.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
