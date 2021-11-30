@@ -1,0 +1,11 @@
+(add-to-list 'load-path "~/.emacs.d/etc/emacs-application-framework/")
+(require 'eaf)
+(require 'eaf-markdown-previewer)
+(require 'eaf-pdf-viewer)
+(require 'eaf-browser)
+(require 'eaf-terminal)
+(require 'eaf-jupyter)
+(require 'eaf-mindmap)
+(require 'eaf-org-previewer)
+
+(provide 'init-eaf)
