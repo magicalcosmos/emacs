@@ -34,7 +34,8 @@
 
 ;; Built-in project package
 (require 'project)
-(global-set-key (kbd "C-x p f") #'project-find-file)
+;(global-set-key (kbd "C-x p f") #'project-find-file)
+(global-set-key (kbd "C-x p f") #'project-or-external-find-file)
 
 
 (provide 'init-projectile)
