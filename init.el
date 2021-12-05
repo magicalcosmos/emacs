@@ -15,6 +15,8 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+;; Use straight.el for use-package expressions
+(straight-use-package 'use-package)
 
 (require 'cc-mode)
 ;; Speed up startup
@@ -156,7 +158,7 @@
 (require 'package)
 ;;optimise loading package
 (setq package-archives
-      '(("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+      '(("melpa" . "https://melpa.org/packages/")
         ("org"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
         ("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")))
 
@@ -210,7 +212,14 @@
 (setq-default evil-shift-width tab-width)
 ;; Use spaces instead of tabs for indentation
 (setq-default indent-tabs-mode nil)
-(global-auto-revert-mode t)
+
+;; Revert Dired and other buffers
+(setq global-auto-revert-non-file-buffers t)
+
+;; Revert buffers when the underlying file has changed
+(global-auto-revert-mode 1)
+
+(global-set-key (kbd "C-x C-b") 'bufler)
 
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)

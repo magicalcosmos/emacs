@@ -35,10 +35,13 @@
 (require 'init-company-tabnine)
 ;;(require 'init-focus)
 ;;(require 'init-helm)
-(require 'init-helm-swoop)
+;;(require 'init-helm-swoop)
 (require 'init-multiple-cursors)
 (require 'init-markdown)
 ;;(require 'init-eaf)
 ;;(require 'init-crux)
 ;;(require 'init-minimap)
-;;(require 'init-ibuffer)
+;;(require 'init-ibuffer
+(require 'init-bufler)
+
+(use-package default-text-scale :ensure t)

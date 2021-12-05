@@ -21,4 +21,4 @@
  '(git-timemachine-minibuffer-author-face ((t (:inherit success))))
  '(git-timemachine-minibuffer-detail-face ((t (:inherit warning))))
  '(transient-posframe ((t (:inherit tooltip))))
- '(transient-posframe-border ((t (:background "#5B6268")))))
+ '(transient-posframe-border ((t (:background "#7c6f64")))))

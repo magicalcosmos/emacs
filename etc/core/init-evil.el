@@ -47,5 +47,11 @@
 (global-undo-tree-mode)
 (evil-set-undo-system 'undo-tree)
 
+(use-package evil-nerd-commenter
+  :ensure t)
+
+;; Emacs key bindings
+(global-set-key (kbd "M-/") 'evilnc-comment-or-uncomment-lines)
+
 
 (provide 'init-evil)

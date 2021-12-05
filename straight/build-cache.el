@@ -3,7 +3,7 @@
 
 "27.2"
 
-#s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data ("org-elpa" ("2021-11-30 09:40:34" nil (:local-repo nil :package "org-elpa" :type git)) "melpa" ("2021-11-30 09:40:34" nil (:type git :host github :repo "melpa/melpa" :build nil :package "melpa" :local-repo "melpa")) "gnu-elpa-mirror" ("2021-11-30 09:40:34" nil (:type git :host github :repo "emacs-straight/gnu-elpa-mirror" :build nil :package "gnu-elpa-mirror" :local-repo "gnu-elpa-mirror")) "el-get" ("2021-11-11 10:36:25" nil (:type git :host github :repo "dimitri/el-get" :build nil :files ("*.el" ("recipes" "recipes/el-get.rcp") "methods" "el-get-pkg.el") :flavor melpa :package "el-get" :local-repo "el-get")) "emacsmirror-mirror" ("2021-11-30 09:40:34" nil (:type git :host github :repo "emacs-straight/emacsmirror-mirror" :build nil :package "emacsmirror-mirror" :local-repo "emacsmirror-mirror")) "straight" ("2021-11-30 09:40:34" ("emacs") (:type git :host github :repo "raxod502/straight.el" :files ("straight*.el") :branch "master" :package "straight" :local-repo "straight.el"))))
+#s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data ("org-elpa" ("2021-12-05 10:11:04" nil (:local-repo nil :package "org-elpa" :type git)) "melpa" ("2021-12-05 10:11:04" nil (:type git :host github :repo "melpa/melpa" :build nil :package "melpa" :local-repo "melpa")) "gnu-elpa-mirror" ("2021-12-05 10:11:04" nil (:type git :host github :repo "emacs-straight/gnu-elpa-mirror" :build nil :package "gnu-elpa-mirror" :local-repo "gnu-elpa-mirror")) "el-get" ("2021-12-05 10:11:04" nil (:type git :host github :repo "dimitri/el-get" :build nil :files ("*.el" ("recipes" "recipes/el-get.rcp") "methods" "el-get-pkg.el") :flavor melpa :package "el-get" :local-repo "el-get")) "emacsmirror-mirror" ("2021-12-05 10:11:04" nil (:type git :host github :repo "emacs-straight/emacsmirror-mirror" :build nil :package "emacsmirror-mirror" :local-repo "emacsmirror-mirror")) "straight" ("2021-12-05 10:11:04" ("emacs") (:type git :host github :repo "raxod502/straight.el" :files ("straight*.el") :branch "master" :package "straight" :local-repo "straight.el")) "use-package" ("2021-12-05 10:11:04" ("emacs" "bind-key") (:type git :flavor melpa :files (:defaults (:exclude "bind-key.el" "bind-chord.el" "use-package-chords.el" "use-package-ensure-system-package.el") "use-package-pkg.el") :host github :repo "jwiegley/use-package" :package "use-package" :local-repo "use-package")) "bind-key" ("2021-12-05 10:11:04" nil (:flavor melpa :files ("bind-key.el" "bind-key-pkg.el") :package "bind-key" :local-repo "use-package" :type git :repo "jwiegley/use-package" :host github))))
 
 #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data ("straight" ((straight-x straight-autoloads straight) (autoload 'straight-remove-unused-repos "straight" "Remove unused repositories from the repos directory.
 A repo is considered \"unused\" if it was not explicitly requested via
@@ -294,10 +294,152 @@ locally bound plist, straight-bug-report-args.
 
 (fn &optional PACKAGE)" t nil) (autoload 'straight-dependents "straight" "Return a list PACKAGE's dependents.
 
-(fn &optional PACKAGE)" t nil) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "straight" '("straight-"))) (defvar straight-x-pinned-packages nil "List of pinned packages.") (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "straight-x" '("straight-x-"))) (provide 'straight-autoloads))))
+(fn &optional PACKAGE)" t nil) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "straight" '("straight-"))) (defvar straight-x-pinned-packages nil "List of pinned packages.") (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "straight-x" '("straight-x-"))) (provide 'straight-autoloads)) "bind-key" ((bind-key-autoloads bind-key) (autoload 'bind-key "bind-key" "Bind KEY-NAME to COMMAND in KEYMAP (`global-map' if not passed).
 
-#s(hash-table size 65 test eq rehash-size 1.5 rehash-threshold 0.8125 data (org-elpa #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 11 "melpa" nil "gnu-elpa-mirror" nil "el-get" nil "emacsmirror-mirror" nil "straight" nil)) melpa #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 2 "gnu-elpa-mirror" nil "el-get" (el-get :type git :flavor melpa :files ("*.el" ("recipes" "recipes/el-get.rcp") "methods" "el-get-pkg.el") :host github :repo "dimitri/el-get") "emacsmirror-mirror" nil "straight" nil)) gnu-elpa-mirror #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 3 "emacsmirror-mirror" nil "straight" nil)) el-get #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 1 "emacsmirror-mirror" nil "straight" nil)) emacsmirror-mirror #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 2 "straight" (straight :type git :host github :repo "emacsmirror/straight")))))
+KEY-NAME may be a vector, in which case it is passed straight to
+`define-key'. Or it may be a string to be interpreted as
+spelled-out keystrokes, e.g., \"C-c C-z\". See documentation of
+`edmacro-mode' for details.
 
-("org-elpa" "melpa" "gnu-elpa-mirror" "el-get" "emacsmirror-mirror" "straight" "emacs")
+COMMAND must be an interactive function or lambda form.
+
+KEYMAP, if present, should be a keymap variable or symbol.
+For example:
+
+  (bind-key \"M-h\" #'some-interactive-function my-mode-map)
+
+  (bind-key \"M-h\" #'some-interactive-function 'my-mode-map)
+
+If PREDICATE is non-nil, it is a form evaluated to determine when
+a key should be bound. It must return non-nil in such cases.
+Emacs can evaluate this form at any time that it does redisplay
+or operates on menu data structures, so you should write it so it
+can safely be called at any time.
+
+(fn KEY-NAME COMMAND &optional KEYMAP PREDICATE)" nil t) (autoload 'unbind-key "bind-key" "Unbind the given KEY-NAME, within the KEYMAP (if specified).
+See `bind-key' for more details.
+
+(fn KEY-NAME &optional KEYMAP)" nil t) (autoload 'bind-key* "bind-key" "Similar to `bind-key', but overrides any mode-specific bindings.
+
+(fn KEY-NAME COMMAND &optional PREDICATE)" nil t) (autoload 'bind-keys "bind-key" "Bind multiple keys at once.
+
+Accepts keyword arguments:
+:map MAP               - a keymap into which the keybindings should be
+                         added
+:prefix KEY            - prefix key for these bindings
+:prefix-map MAP        - name of the prefix map that should be created
+                         for these bindings
+:prefix-docstring STR  - docstring for the prefix-map variable
+:menu-name NAME        - optional menu string for prefix map
+:filter FORM           - optional form to determine when bindings apply
+
+The rest of the arguments are conses of keybinding string and a
+function symbol (unquoted).
+
+(fn &rest ARGS)" nil t) (autoload 'bind-keys* "bind-key" "
+
+(fn &rest ARGS)" nil t) (autoload 'describe-personal-keybindings "bind-key" "Display all the personal keybindings defined by `bind-key'." t nil) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "bind-key" '("bind-key" "compare-keybindings" "get-binding-description" "override-global-m" "personal-keybindings"))) (provide 'bind-key-autoloads)) "use-package" ((use-package-diminish use-package use-package-lint use-package-delight use-package-jump use-package-autoloads use-package-core use-package-ensure use-package-bind-key) (autoload 'use-package-autoload-keymap "use-package-bind-key" "Loads PACKAGE and then binds the key sequence used to invoke
+this function to KEYMAP-SYMBOL. It then simulates pressing the
+same key sequence a again, so that the next key pressed is routed
+to the newly loaded keymap.
+
+This function supports use-package's :bind-keymap keyword. It
+works by binding the given key sequence to an invocation of this
+function for a particular keymap. The keymap is expected to be
+defined by the package. In this way, loading the package is
+deferred until the prefix key sequence is pressed.
+
+(fn KEYMAP-SYMBOL PACKAGE OVERRIDE)" nil nil) (autoload 'use-package-normalize-binder "use-package-bind-key" "
+
+(fn NAME KEYWORD ARGS)" nil nil) (defalias 'use-package-normalize/:bind 'use-package-normalize-binder) (defalias 'use-package-normalize/:bind* 'use-package-normalize-binder) (defalias 'use-package-autoloads/:bind 'use-package-autoloads-mode) (defalias 'use-package-autoloads/:bind* 'use-package-autoloads-mode) (autoload 'use-package-handler/:bind "use-package-bind-key" "
+
+(fn NAME KEYWORD ARGS REST STATE &optional BIND-MACRO)" nil nil) (defalias 'use-package-normalize/:bind-keymap 'use-package-normalize-binder) (defalias 'use-package-normalize/:bind-keymap* 'use-package-normalize-binder) (autoload 'use-package-handler/:bind-keymap "use-package-bind-key" "
+
+(fn NAME KEYWORD ARGS REST STATE &optional OVERRIDE)" nil nil) (autoload 'use-package-handler/:bind-keymap* "use-package-bind-key" "
+
+(fn NAME KEYWORD ARG REST STATE)" nil nil) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-bind-key" '("use-package-handler/:bind*"))) (autoload 'use-package "use-package-core" "Declare an Emacs package by specifying a group of configuration options.
+
+For full documentation, please see the README file that came with
+this file.  Usage:
+
+  (use-package package-name
+     [:keyword [option]]...)
+
+:init            Code to run before PACKAGE-NAME has been loaded.
+:config          Code to run after PACKAGE-NAME has been loaded.  Note that
+                 if loading is deferred for any reason, this code does not
+                 execute until the lazy load has occurred.
+:preface         Code to be run before everything except `:disabled'; this
+                 can be used to define functions for use in `:if', or that
+                 should be seen by the byte-compiler.
+
+:mode            Form to be added to `auto-mode-alist'.
+:magic           Form to be added to `magic-mode-alist'.
+:magic-fallback  Form to be added to `magic-fallback-mode-alist'.
+:interpreter     Form to be added to `interpreter-mode-alist'.
+
+:commands        Define autoloads for commands that will be defined by the
+                 package.  This is useful if the package is being lazily
+                 loaded, and you wish to conditionally call functions in your
+                 `:init' block that are defined in the package.
+:hook            Specify hook(s) to attach this package to.
+
+:bind            Bind keys, and define autoloads for the bound commands.
+:bind*           Bind keys, and define autoloads for the bound commands,
+                 *overriding all minor mode bindings*.
+:bind-keymap     Bind a key prefix to an auto-loaded keymap defined in the
+                 package.  This is like `:bind', but for keymaps.
+:bind-keymap*    Like `:bind-keymap', but overrides all minor mode bindings
+
+:defer           Defer loading of a package -- this is implied when using
+                 `:commands', `:bind', `:bind*', `:mode', `:magic', `:hook',
+                 `:magic-fallback', or `:interpreter'.  This can be an integer,
+                 to force loading after N seconds of idle time, if the package
+                 has not already been loaded.
+:after           Delay the use-package declaration until after the named modules
+                 have loaded. Once load, it will be as though the use-package
+                 declaration (without `:after') had been seen at that moment.
+:demand          Prevent the automatic deferred loading introduced by constructs
+                 such as `:bind' (see `:defer' for the complete list).
+
+:if EXPR         Initialize and load only if EXPR evaluates to a non-nil value.
+:disabled        The package is ignored completely if this keyword is present.
+:defines         Declare certain variables to silence the byte-compiler.
+:functions       Declare certain functions to silence the byte-compiler.
+:load-path       Add to the `load-path' before attempting to load the package.
+:diminish        Support for diminish.el (if installed).
+:delight         Support for delight.el (if installed).
+:custom          Call `custom-set' or `set-default' with each variable
+                 definition without modifying the Emacs `custom-file'.
+                 (compare with `custom-set-variables').
+:custom-face     Call `customize-set-faces' with each face definition.
+:ensure          Loads the package using package.el if necessary.
+:pin             Pin the package to an archive.
+
+(fn NAME &rest ARGS)" nil t) (function-put 'use-package 'lisp-indent-function '1) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-core" '("use-package-"))) (autoload 'use-package-normalize/:delight "use-package-delight" "Normalize arguments to delight.
+
+(fn NAME KEYWORD ARGS)" nil nil) (autoload 'use-package-handler/:delight "use-package-delight" "
+
+(fn NAME KEYWORD ARGS REST STATE)" nil nil) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-delight" '("use-package-normalize-delight"))) (autoload 'use-package-normalize/:diminish "use-package-diminish" "
+
+(fn NAME KEYWORD ARGS)" nil nil) (autoload 'use-package-handler/:diminish "use-package-diminish" "
+
+(fn NAME KEYWORD ARG REST STATE)" nil nil) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-diminish" '("use-package-normalize-diminish"))) (autoload 'use-package-normalize/:ensure "use-package-ensure" "
+
+(fn NAME KEYWORD ARGS)" nil nil) (autoload 'use-package-handler/:ensure "use-package-ensure" "
+
+(fn NAME KEYWORD ENSURE REST STATE)" nil nil) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-ensure" '("use-package-"))) (autoload 'use-package-jump-to-package-form "use-package-jump" "Attempt to find and jump to the `use-package' form that loaded
+PACKAGE. This will only find the form if that form actually
+required PACKAGE. If PACKAGE was previously required then this
+function will jump to the file that originally required PACKAGE
+instead.
+
+(fn PACKAGE)" t nil) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-jump" '("use-package-find-require"))) (autoload 'use-package-lint "use-package-lint" "Check for errors in use-package declarations.
+For example, if the module's `:if' condition is met, but even
+with the specified `:load-path' the module cannot be found." t nil) (if (fboundp 'register-definition-prefixes) (register-definition-prefixes "use-package-lint" '("use-package-lint-declaration"))) (provide 'use-package-autoloads))))
+
+#s(hash-table size 65 test eq rehash-size 1.5 rehash-threshold 0.8125 data (org-elpa #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 11 "melpa" nil "gnu-elpa-mirror" nil "el-get" nil "emacsmirror-mirror" nil "straight" nil "use-package" nil "bind-key" nil)) melpa #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 2 "gnu-elpa-mirror" nil "el-get" (el-get :type git :flavor melpa :files ("*.el" ("recipes" "recipes/el-get.rcp") "methods" "el-get-pkg.el") :host github :repo "dimitri/el-get") "emacsmirror-mirror" nil "straight" nil "use-package" (use-package :type git :flavor melpa :files (:defaults (:exclude "bind-key.el" "bind-chord.el" "use-package-chords.el" "use-package-ensure-system-package.el") "use-package-pkg.el") :host github :repo "jwiegley/use-package") "bind-key" (bind-key :type git :flavor melpa :files ("bind-key.el" "bind-key-pkg.el") :host github :repo "jwiegley/use-package"))) gnu-elpa-mirror #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 3 "emacsmirror-mirror" nil "straight" nil)) el-get #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 1 "emacsmirror-mirror" nil "straight" nil)) emacsmirror-mirror #s(hash-table size 65 test equal rehash-size 1.5 rehash-threshold 0.8125 data (version 2 "straight" (straight :type git :host github :repo "emacsmirror/straight")))))
+
+("org-elpa" "melpa" "gnu-elpa-mirror" "el-get" "emacsmirror-mirror" "straight" "emacs" "use-package" "bind-key")
 
 t

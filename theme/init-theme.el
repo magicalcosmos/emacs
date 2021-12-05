@@ -27,10 +27,13 @@
 ;              :config
 ;              (load-theme 'kaolin-dark t)
 ;              (kaolin-treemacs-theme))
-; (use-package zenburn-theme
-;              :config
-;              (load-theme 'zenburn t))
 
+
+;; (use-package zenburn-theme
+;; :ensure t
+;; :config (load-theme 'zenburn t))
+
+;; (load-theme 'leuven t)
 
 ;;gruvbox-dark-medium, gruvbox-dark-soft, gruvbox-dark-hard,
   (use-package gruvbox-theme
