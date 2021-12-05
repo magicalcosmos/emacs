@@ -24,9 +24,11 @@
 (dashboard-modify-heading-icons '((recents . "file-text")
                                             (bookmarks . "book")))
 (setq dashboard-set-navigator t)
-(setq dashboard-set-footer nil)
+(setq dashboard-set-footer t)
 (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
 (setq dashboard-org-agenda-categories '("Tasks" "Appointments"))
 (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+
+(setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
 
 (provide 'init-dashboard)
