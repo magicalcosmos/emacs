@@ -13,6 +13,7 @@
   :bind-keymap
   ("C-c p" . projectile-command-map)
   :init
+  (projectile-mode +1)
   (when (file-directory-p "~/workspace/web")
     (setq projectile-project-search-path '("~/workspace/web")))
   (setq projectile-switch-project-action #'bl/switch-project-action))
@@ -36,6 +37,5 @@
 (require 'project)
 ;(global-set-key (kbd "C-x p f") #'project-find-file)
 (global-set-key (kbd "C-x p f") #'project-or-external-find-file)
-
 
 (provide 'init-projectile)

@@ -219,7 +219,8 @@
 ;; Revert buffers when the underlying file has changed
 (global-auto-revert-mode 1)
 
-(global-set-key (kbd "C-x C-b") 'bufler)
+;(global-set-key (kbd "C-x C-b") 'bufler)
+(global-set-key (kbd "C-x C-b") 'projectile-ibuffer)
 
 (setq ido-enable-flex-matching t)
 (setq ido-everywhere t)

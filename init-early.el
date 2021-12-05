@@ -43,5 +43,7 @@
 ;;(require 'init-minimap)
 ;;(require 'init-ibuffer
 (require 'init-bufler)
+(require 'init-beacon)
+
 
 (use-package default-text-scale :ensure t)
