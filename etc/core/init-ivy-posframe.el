@@ -4,7 +4,7 @@
 (setq ivy-posframe-display-functions-alist
    '((swiper          . ivy-posframe-display-at-window-center)
      (complete-symbol . ivy-posframe-display-at-window-center)
-     (counsel-M-x     . ivy-posframe-display-at-window-bottom-left)
+     (counsel-M-x     . ivy-posframe-display-at-window-center)
      (counsel-find-file     . ivy-posframe-display-at-window-center)
      (fuzzy-finder-find-files-projectile     . ivy-posframe-display-at-window-center)
      (t               . ivy-posframe-display-at-window-center)))

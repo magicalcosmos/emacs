@@ -42,7 +42,7 @@
 ;;(require 'init-crux)
 ;;(require 'init-minimap)
 ;;(require 'init-ibuffer
-(require 'init-bufler)
+;;(require 'init-bufler)
 (require 'init-beacon)
 
 
