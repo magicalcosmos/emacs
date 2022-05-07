@@ -973,7 +973,7 @@ These templates enable you to type things like <el and then hit Tab to expand th
 
 (bl/leader-key-def
   "pf"  'projectile-find-file
-  "ps"  'projectile-switch-project
+  ; "ps"  'projectile-switch-project
   "pF"  'consult-ripgrep
   "pp"  'projectile-find-file
   "pc"  'projectile-compile-project

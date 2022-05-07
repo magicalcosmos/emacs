@@ -15,9 +15,10 @@
     (setq projectile-project-search-path '("~/workspace/web")))
   (setq projectile-switch-project-action #'bl/switch-project-action))
 
+
 (use-package counsel-projectile
   :ensure t
-  :disabled
+  ; :disabled
   :after projectile
   :config
   (counsel-projectile-mode))
