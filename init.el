@@ -61,8 +61,6 @@
 ;; we must prevent Emacs from doing it early!
 (setq package-enable-at-startup nil)
 
-(setq package-enable-at-startup nil)
-
 (setq inhibit-startup-message nil)
 (setq initial-buffer-choice  nil)
 (setq inhibit-compacting-font-caches t)
@@ -157,10 +155,8 @@
 
 (require 'package)
 ;;optimise loading package
-(setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-        ("org"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
-        ("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")))
+(setq package-archives '(("gnu"   . "http://elpa.zilongshanren.com/gnu/")
+                         ("melpa" . "http://elpa.zilongshanren.com/melpa/")))
 
 (package-initialize)
 
@@ -222,10 +218,10 @@
 ;(global-set-key (kbd "C-x C-b") 'bufler)
 (global-set-key (kbd "C-x C-b") 'projectile-ibuffer)
 
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(setq ido-use-filename-at-point 'guess)
-(ido-mode 1)
+;(setq ido-enable-flex-matching t)
+;(setq ido-everywhere t)
+;(setq ido-use-filename-at-point 'guess)
+;(ido-mode 1)
 
 
 

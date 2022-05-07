@@ -955,10 +955,10 @@ These templates enable you to type things like <el and then hit Tab to expand th
   :ensure t
   :diminish projectile-mode
   :config (projectile-mode)
-  :demand t
-  :bind ("C-M-p" . projectile-find-file)
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
+;  :demand t
+;  :bind ("C-M-p" . projectile-find-file)
+;  :bind-keymap
+;  ("C-c p" . projectile-command-map)
   :init
   (when (file-directory-p "~/workspace/web")
     (setq projectile-project-search-path '("~/workspace/web")))

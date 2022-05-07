@@ -1,3 +1,5 @@
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+
 (use-package org
     :ensure t
     :pin org)

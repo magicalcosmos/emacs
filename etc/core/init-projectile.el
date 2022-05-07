@@ -9,9 +9,6 @@
   :diminish projectile-mode
   :config (projectile-mode)
   :demand t
-  :bind ("C-M-p" . projectile-find-file)
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
   :init
   (projectile-mode +1)
   (when (file-directory-p "~/workspace/web")
@@ -26,10 +23,10 @@
   (counsel-projectile-mode))
 
 (bl/leader-key-def
-  "pf"  'projectile-find-file
-  "ps"  'projectile-switch-project
+  "pf"  'counsel-projectile-find-file
+  "ps"  'counsel-projectile-switch-project
   "pF"  'consult-ripgrep
-  "pp"  'projectile-find-file
+  "pp"  'counsel-projectile-find-file
   "pc"  'projectile-compile-project
   "pd"  'projectile-dired)
 
@@ -37,5 +34,19 @@
 (require 'project)
 ;(global-set-key (kbd "C-x p f") #'project-find-file)
 (global-set-key (kbd "C-x p f") #'project-or-external-find-file)
+
+(bl/ctrl-c-keys
+ "pp" 'counsel-projectile-switch-project
+ "pf" 'counsel-projectile-find-file
+ "pg" 'counsel-projectile-find-file-dwim
+ "pd" 'counsel-projectile-find-dir
+ "pb" 'counsel-projectile-switch-to-buffer
+ "psg" 'counsel-projectile-grep
+ "pss" 'counsel-projectile-ag
+ "psr" 'counsel-projectile-rg
+ "psSPC" 'counsel-projectile
+ "psi" 'counsel-projectile-git-grep
+ "p0c" 'counsel-projectile-org-capture
+ "p0a" 'counsel-projectile-org-agenda)
 
 (provide 'init-projectile)

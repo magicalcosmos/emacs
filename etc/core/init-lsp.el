@@ -51,8 +51,12 @@
           '("\\.vue?\\'" . prettier-js-mode))
           (enable-minor-mode
           '("\\.jsx?\\'" . prettier-js-mode))
-           (enable-minor-mode
-                              '("\\.tsx?\\'" . prettier-js-mode))))
+          (enable-minor-mode
+          '("\\.js?\\'" . prettier-js-mode))
+          (enable-minor-mode
+          '("\\.ts?\\'" . prettier-js-mode))
+          (enable-minor-mode
+          '("\\.tsx?\\'" . prettier-js-mode))))
 
 
 

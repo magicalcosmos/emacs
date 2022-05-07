@@ -11,15 +11,22 @@
 (require 'init-magit)
 (require 'init-which-key)
 
-(require 'init-swiper-ivy-counsel)
+;;(require 'init-swiper-ivy-counsel)
 ;;(require 'init-ivy-posframe)
 (require 'init-evil)
 
-(require 'init-dired)
+;;dired
+;;(require 'init-dired)
+;;ranger
+(require 'init-ranger)
+
 (require 'init-treemacs)
 (require 'init-projectile)
 (require 'init-ace-window)
 (require 'init-flycheck)
+
+;; init pythob environment
+;(require 'init-elpy)
 
 (require 'init-company)
 (require 'init-web)
@@ -34,8 +41,8 @@
 
 (require 'init-company-tabnine)
 ;;(require 'init-focus)
-;;(require 'init-helm)
-;;(require 'init-helm-swoop)
+(require 'init-helm)
+(require 'init-helm-swoop)
 (require 'init-multiple-cursors)
 (require 'init-markdown)
 ;;(require 'init-eaf)
@@ -44,6 +51,9 @@
 ;;(require 'init-ibuffer
 ;;(require 'init-bufler)
 (require 'init-beacon)
+
+;; occure some problem
+;(require 'init-latex)
 
 
 (use-package default-text-scale :ensure t)

@@ -1,4 +1,4 @@
-;;; straight-autoloads.el --- automatically extracted autoloads
+;;; straight-autoloads.el --- automatically extracted autoloads  -*- lexical-binding: t -*-
 ;;
 ;;; Code:
 
@@ -399,7 +399,7 @@ Return a list PACKAGE's dependents.
 
 \(fn &optional PACKAGE)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "straight" '("straight-")))
+(register-definition-prefixes "straight" '("straight-"))
 
 ;;;***
 
@@ -409,7 +409,7 @@ Return a list PACKAGE's dependents.
 (defvar straight-x-pinned-packages nil "\
 List of pinned packages.")
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "straight-x" '("straight-x-")))
+(register-definition-prefixes "straight-x" '("straight-x-"))
 
 ;;;***
 

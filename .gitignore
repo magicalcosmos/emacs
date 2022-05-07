@@ -22,3 +22,5 @@ bookmarks
 org-roam.db
 .nvimlog
 straight
+url/
+straight/build-cache.el

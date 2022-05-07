@@ -4,8 +4,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(org-confirm-babel-evaluate nil)
- '(org-default-notes-file (concat org-directory "/notes.org"))
- '(org-directory "~/Sync/orgfiles")
  '(org-export-html-postamble nil)
  '(org-hide-leading-stars t)
  '(org-src-fontify-natively t)
