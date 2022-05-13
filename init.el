@@ -1,6 +1,15 @@
-;;;
-;;;  Created by Brody Liao
-;;;
+;;; init.el --- Load the full configuration -*- lexical-binding: t -*-
+;;; Commentary:
+
+;; This file bootstraps the configuration, which is divided into
+;; a number of other files.
+
+;;; Code:
+
+;; Produce backtraces when errors occur: can be helpful to diagnose startup issues
+;;(setq debug-on-error t)
+
+;; Author: brodyliao
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -38,11 +47,40 @@
 
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.5)
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            "Recover GC values after startup."
-            (setq gc-cons-threshold 800000
-                  gc-cons-percentage 0.1)))
+
+; (add-hook 'emacs-startup-hook
+;           (lambda ()
+;             "Recover GC values after startup."
+;             (setq gc-cons-threshold 800000
+;                   gc-cons-percentage 0.1)))
+(let ((normal-gc-cons-threshold (* 20 1024 1024))
+      (init-gc-cons-threshold (* 128 1024 1024)))
+  (setq gc-cons-threshold init-gc-cons-threshold)
+  (add-hook 'emacs-startup-hook
+            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+
+
+
+;; Use spotlight search backend as a default for M-x locate (and helm/ivy
+;; variants thereof), since it requires no additional setup.
+(setq locate-command "mdfind")
+
+
+;;
+;;; Compatibilty fixes
+
+;; Curse Lion and its sudden but inevitable fullscreen mode!
+;; NOTE Meaningless to railwaycat's emacs-mac build
+(setq ns-use-native-fullscreen nil)
+
+;; Visit files opened outside of Emacs in existing frame, not a new one
+(setq ns-pop-up-frames nil)
+
+;; sane trackpad/mouse scroll settings
+(setq mac-redisplay-dont-reset-vscroll t
+      mac-mouse-wheel-smooth-scroll nil)
+
+
 
 ;; Prevent unwanted runtime compilation for gccemacs (native-comp) users;
 ;; packages are compiled ahead-of-time when they are installed and site files
@@ -61,9 +99,20 @@
 ;; we must prevent Emacs from doing it early!
 (setq package-enable-at-startup nil)
 
-(setq inhibit-startup-message nil)
+(setq inhibit-startup-message t)
 (setq initial-buffer-choice  nil)
 (setq inhibit-compacting-font-caches t)
+
+
+
+(electric-pair-mode t)                       ; 自动补全括号
+(add-hook 'prog-mode-hook #'show-paren-mode) ; 编程模式下，光标在括号上时高亮另一个括号
+(column-number-mode t)                       ; 在 Mode line 上显示列号
+(delete-selection-mode t)                    ; 选中文本后输入文本会替换文本（更符合我们习惯了的其它编辑器的逻辑）
+(add-hook 'prog-mode-hook #'hs-minor-mode)   ; 编程模式下，可以折叠代码块
+(when (display-graphic-p) (toggle-scroll-bar -1)) ; 图形界面时关闭滚动条
+(global-set-key (kbd "C-c '") 'comment-or-uncomment-region) ; 为选中的代码加注释/去注释
+
 
 ;; remove cl warning
 (setq byte-compile-warnings '(cl-functions))
@@ -109,7 +158,7 @@
 ;; set type of line numbering (global variable)
 (setq display-line-numbers-type 'relative)
 ;; activate line numbering in all buffers/modes
-(global-display-line-numbers-mode)
+(global-display-line-numbers-mode 1)
 ;; Activate line numbering in programming modes
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (global-hl-line-mode 1)
@@ -155,8 +204,8 @@
 
 (require 'package)
 ;;optimise loading package
-(setq package-archives '(("gnu"   . "http://elpa.zilongshanren.com/gnu/")
-                         ("melpa" . "http://elpa.zilongshanren.com/melpa/")))
+(setq package-archives '(("gnu"   . "http://mirrors.cloud.tencent.com/elpa/gnu/")
+                         ("melpa" . "http://mirrors.cloud.tencent.com/elpa/melpa/")))
 
 (package-initialize)
 
@@ -165,6 +214,12 @@
 (package-refresh-contents)
 (package-install 'use-package))
 (setq use-package-always-ensure t)
+
+
+
+(use-package good-scroll
+             :ensure t
+             :init (good-scroll-mode))
 
 
 ;; chords
@@ -188,6 +243,12 @@
 
 (load-file (expand-file-name "init-early.el" user-emacs-directory))
 
+(use-package mwim
+  :ensure t
+  :bind
+  ("C-a" . mwim-beginning-of-code-or-line)
+  ("C-e" . mwim-end-of-code-or-line))
+
 ;; user custom config
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (when (file-exists-p custom-file)
@@ -197,6 +258,7 @@
 (defconst *is-mac* (eq system-type 'darwin))
 (defconst *is-linux* (eq system-type 'gnu/linux))
 (defconst *is-windows* (or (eq system-type 'ms-dos)(eq system-type 'windows-nt)))
+
 
 ;; command key to meta for default
 (when *is-mac*
@@ -213,7 +275,7 @@
 (setq global-auto-revert-non-file-buffers t)
 
 ;; Revert buffers when the underlying file has changed
-(global-auto-revert-mode 1)
+(global-auto-revert-mode t)
 
 ;(global-set-key (kbd "C-x C-b") 'bufler)
 (global-set-key (kbd "C-x C-b") 'projectile-ibuffer)

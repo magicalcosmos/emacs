@@ -1,5 +1,5 @@
 (use-package treemacs
-  :defer 2
+  :defer 4
   :ensure t
   :defer t
   :init
@@ -50,7 +50,8 @@
           treemacs-user-header-line-format       nil
           treemacs-width                         35
           treemacs-width-is-initially-locked     t
-          treemacs-workspace-switch-cleanup      nil)
+          treemacs-workspace-switch-cleanup      nil
+          treemacs-is-never-other-window t)
 
     ;; The default width and height of the icons is 22 pixels. If you are
     ;; using a Hi-DPI display, uncomment this to double the icon size.
@@ -69,7 +70,7 @@
   (:map global-map
         ("M-0"       . treemacs-select-window)
         ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
+        ("M-9"   . treemacs)
         ("C-x t B"   . treemacs-bookmark)
         ("C-x t C-t" . treemacs-find-file)
         ("C-x t M-t" . treemacs-find-tag)))
@@ -91,9 +92,9 @@
   :after (treemacs magit)
   :ensure t)
 
-(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-  :ensure t
-  :config (treemacs-set-scope-type 'Perspectives))
+;(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+;  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+;  :ensure t
+;  :config (treemacs-set-scope-type 'Perspectives))
 
 (provide 'init-treemacs)

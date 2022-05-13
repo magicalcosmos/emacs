@@ -1,4 +1,7 @@
-(use-package page-break-lines :ensure t)
+(use-package
+  page-break-lines
+  :ensure t)
+
 (page-break-lines-mode)
 
 (use-package dashboard
@@ -18,8 +21,8 @@
 (setq dashboard-set-init-info t)
 ;;(setq dashboard-startup-banner "~/.emacs.d/emacs-logo.png")
 ; (setq dashboard-projects-switch-function 'counsel-projectile-switch-project)
-(setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
-; (setq projectile-switch-project-action 'helm-projectile-switch-project)
+;(setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+ (setq projectile-switch-project-action 'projectile-switch-project)
 (setq dashboard-week-agenda t)
 ;;(setq dashboard-filter-agenda-entry dashboard-no-filter-agenda)
 ;;(setq dashboard-match-agenda-entry "~/Sync/orgfiles";; Content is not centered by default. To center, set

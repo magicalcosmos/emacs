@@ -52,6 +52,10 @@
   :defer t
   :after hydra)
 
+(use-package use-package-hydra
+  :ensure t
+  :after hydra) 
+
 (use-package all-the-icons-ivy-rich
   :ensure t
   :init (all-the-icons-ivy-rich-mode 1))

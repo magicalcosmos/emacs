@@ -1,0 +1,5 @@
+;;; -*- lisp-data -*-
+(("~/workspace/web/rocket-web/")
+ ("~/.emacs.d/")
+ ("~/")
+ ("~/workspace/web/leopard/"))

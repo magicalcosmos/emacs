@@ -11,5 +11,6 @@
   ("l" dumb-jump-quick-look "Quick look")
   ("b" dumb-jump-back "Back"))
 
-
+(setq xref-show-definitions-function #'xref-show-definitions-completing-read)
+(setq dumb-jump-prefer-searcher 'ag)
 (provide 'init-dumb-jump)

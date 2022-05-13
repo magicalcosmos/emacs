@@ -1,3 +1,4 @@
+
 (require 'cc-mode)
 
 (require 'color-rg)
@@ -11,6 +12,7 @@
 (require 'init-magit)
 (require 'init-which-key)
 
+
 ;;(require 'init-swiper-ivy-counsel)
 ;;(require 'init-ivy-posframe)
 (require 'init-evil)
@@ -22,6 +24,8 @@
 
 (require 'init-treemacs)
 (require 'init-projectile)
+(require 'init-persp-projectile)
+
 (require 'init-ace-window)
 (require 'init-flycheck)
 
@@ -47,13 +51,15 @@
 (require 'init-markdown)
 ;;(require 'init-eaf)
 ;;(require 'init-crux)
-;;(require 'init-minimap)
+(require 'init-minimap)
 ;;(require 'init-ibuffer
 ;;(require 'init-bufler)
 (require 'init-beacon)
 
 ;; occure some problem
 ;(require 'init-latex)
+;(require 'init-marginalia)
 
+(require 'init-google-this)
 
 (use-package default-text-scale :ensure t)
