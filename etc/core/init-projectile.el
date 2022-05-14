@@ -3,6 +3,8 @@
   ;; TODO: Switch to EXWM workspace 1?
   (persp-switch (projectile-project-name))
   (magit-status))
+(use-package ripgrep
+  :ensure t)
 
 (use-package projectile
   :ensure t

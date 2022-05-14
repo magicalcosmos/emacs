@@ -40,7 +40,7 @@
 (require 'init-org)
 
 (require 'init-drag-stuff)
-(require 'init-dumb-jump)
+;(require 'init-dumb-jump)
 (require 'init-vterm)
 
 (require 'init-company-tabnine)
@@ -51,7 +51,7 @@
 (require 'init-markdown)
 ;;(require 'init-eaf)
 ;;(require 'init-crux)
-(require 'init-minimap)
+;(require 'init-minimap)
 ;;(require 'init-ibuffer
 ;;(require 'init-bufler)
 (require 'init-beacon)

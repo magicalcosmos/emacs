@@ -31,11 +31,12 @@
              lsp-ui-sideline-enable t
              lsp-ui-sideline-show-hover nil
              lsp-ui-sideline-show-diagnostics nil
-             lsp-ui-sideline-ignore-duplicate t)
+             lsp-ui-sideline-ignore-duplicate t
+             lsp-headerline-breadcrumb-enable-symbol-numbers t)
   :config(setq lsp-ui-flycheck-enable t)
   :commands lsp-ui-mode)
 
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+
 (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
 (defun enable-minor-mode (my-pair)
@@ -57,6 +58,7 @@
           '("\\.ts?\\'" . prettier-js-mode))
           (enable-minor-mode
           '("\\.tsx?\\'" . prettier-js-mode))))
+
 
 
 (straight-use-package

@@ -47,4 +47,11 @@
 
 (global-set-key (kbd "M-p") #'helm-projectile-find-file)
 
+
+
+(use-package helm-lsp
+  :ensure t)
+
+(define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
+
 (provide 'init-helm)

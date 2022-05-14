@@ -60,7 +60,6 @@
             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 
-
 ;; Use spotlight search backend as a default for M-x locate (and helm/ivy
 ;; variants thereof), since it requires no additional setup.
 (setq locate-command "mdfind")
@@ -75,11 +74,6 @@
 
 ;; Visit files opened outside of Emacs in existing frame, not a new one
 (setq ns-pop-up-frames nil)
-
-;; sane trackpad/mouse scroll settings
-(setq mac-redisplay-dont-reset-vscroll t
-      mac-mouse-wheel-smooth-scroll nil)
-
 
 
 ;; Prevent unwanted runtime compilation for gccemacs (native-comp) users;

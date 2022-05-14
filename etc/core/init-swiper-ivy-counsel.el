@@ -132,6 +132,7 @@ all-the-icons-ivy-rich-display-transformers-list
   (setq ivy-display-style 'fancy)
   (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
   ))
+
 (bl/leader-key-def
 "r"   '(ivy-resume :which-key "ivy resume")
 "f"   '(:ignore t :which-key "files")
@@ -140,5 +141,9 @@ all-the-icons-ivy-rich-display-transformers-list
 "fr"  '(counsel-recentf :which-key "recent files")
 "fR"  '(revert-buffer :which-key "revert file")
 "fj"  '(counsel-file-jump :which-key "jump to file"))
+
+
+
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
 (provide 'init-swiper-ivy-counsel)

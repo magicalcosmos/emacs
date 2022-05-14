@@ -24,3 +24,5 @@ org-roam.db
 straight
 url/
 straight/build-cache.el
+
+.flycheck_init-projectile.el
